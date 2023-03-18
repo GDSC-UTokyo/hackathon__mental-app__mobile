@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AppColorTheme {
+
   const AppColorTheme({
     required this.primary,
     required this.secondary,
@@ -20,6 +21,7 @@ class AppColorTheme {
     required this.purple,
     required this.pink,
     required this.error,
+    required this.black,
   });
 
   factory AppColorTheme.light() {
@@ -48,6 +50,7 @@ class AppColorTheme {
       purple: const Color(0xffE4B7FF),
       pink: const Color(0xffFFB8E6),
       error: const Color(0xffBF3130),
+      black: const Color(0xff000000),
     );
   }
 
@@ -69,4 +72,5 @@ class AppColorTheme {
   final Color purple;
   final Color pink;
   final Color error;
+  final Color black;
 }
