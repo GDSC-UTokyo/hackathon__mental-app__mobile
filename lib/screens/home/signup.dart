@@ -1,16 +1,16 @@
-import 'package:app/screens/home/signup.dart';
 import 'package:app/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:app/screens/home/login.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class SignupPage extends StatefulWidget {
+  const SignupPage({super.key});
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _SignupPageState createState() => _SignupPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _SignupPageState extends State<SignupPage> {
   String email = '';
   String password = '';
   String message = '';
@@ -19,7 +19,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     final themeColor = Provider.of<ThemeProvider>(context).theme.colorTheme;
 
-    InputDecoration loginInputDecoration(String labelText){
+    InputDecoration signupInputDecoration(String labelText) {
       return InputDecoration(
         fillColor: themeColor.white[1],
         filled: true,
@@ -58,7 +58,7 @@ class _LoginPageState extends State<LoginPage> {
                   bottom: 15.0,
                 ),
                 child: TextFormField(
-                  decoration: loginInputDecoration('email'),
+                  decoration: signupInputDecoration('email'),
                   onChanged: (String value) {
                     setState(() {
                       email = value;
@@ -71,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
                   bottom: 30.0,
                 ),
                 child: TextFormField(
-                  decoration: loginInputDecoration('password'),
+                  decoration: signupInputDecoration('password'),
                   obscureText: true,
                   onChanged: (String value) {
                     setState(() {
@@ -85,13 +85,13 @@ class _LoginPageState extends State<LoginPage> {
                   bottom: 30.0,
                 ),
                 child: ElevatedButton(
-                  onPressed: (){
-                    //メールアドレスとパスワードを送る
+                  onPressed: () {
+
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: themeColor.primary,
                     foregroundColor: themeColor.white.first,
-                    fixedSize: const Size(200,40),
+                    fixedSize: const Size(200, 40),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -99,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
                       fontSize: 25,
                     ),
                   ),
-                  child: const Text('sign in'),
+                  child: const Text('sign up'),
                 ),
               ),
               Padding(
@@ -114,14 +114,14 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                          builder: (context) {
-                            return SignupPage();
-                          }
+                        builder: (context) {
+                          return LoginPage();
+                        }
                       ),
                     );
                   },
                   child: const Text(
-                    'アカウントをお持ちでない方の登録はこちら',
+                    'アカウントをお持ちの方のログインはこちら',
                     style: TextStyle(
                       decoration: TextDecoration.underline,
                     ),
