@@ -1,3 +1,4 @@
+import 'package:app/screens/home/home.dart';
 import 'package:app/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -86,7 +87,14 @@ class _SignupPageState extends State<SignupPage> {
                 ),
                 child: ElevatedButton(
                   onPressed: () {
-
+                    //メールアドレスとパスワードを送る
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (context) {
+                            return HomePage();
+                          }
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: themeColor.primary,

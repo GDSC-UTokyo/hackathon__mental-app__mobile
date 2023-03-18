@@ -1,3 +1,4 @@
+import 'package:app/screens/home/initial.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:flutter/material.dart';
 import 'package:app/screens/home/home.dart';
@@ -16,7 +17,8 @@ class MyApp extends StatelessWidget {
           onUnknownRoute: (path) =>
               const MaterialPage(child: UnknownPage()), //FIXME:
           routes: {
-            '/': (_) => const MaterialPage(child: HomePage()),
+            '/': (_) => const MaterialPage(child: InitialPage()),
+            '/home': (_) => const MaterialPage(child: HomePage()),
             '/login': (_) => const MaterialPage(child: LoginPage()),
             '/signup': (_) => const MaterialPage(child: SignupPage()),
           },
