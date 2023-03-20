@@ -1,17 +1,18 @@
 import 'package:app/screens/home/home.dart';
-import 'package:app/screens/home/signup.dart';
+import 'package:app/screens/signup.dart';
 import 'package:app/theme/theme.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class SigninPage extends StatefulWidget {
+  const SigninPage({super.key});
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _SigninPageState createState() => _SigninPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _SigninPageState extends State<SigninPage> {
   String email = '';
   String password = '';
   String message = '';
@@ -20,7 +21,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     final themeColor = Provider.of<ThemeProvider>(context).theme.colorTheme;
 
-    InputDecoration loginInputDecoration(String labelText){
+    InputDecoration SigninInputDecoration(String labelText){
       return InputDecoration(
         fillColor: themeColor.white[1],
         filled: true,
@@ -59,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
                   bottom: 15.0,
                 ),
                 child: TextFormField(
-                  decoration: loginInputDecoration('email'),
+                  decoration: SigninInputDecoration('email'),
                   onChanged: (String value) {
                     setState(() {
                       email = value;
@@ -72,7 +73,7 @@ class _LoginPageState extends State<LoginPage> {
                   bottom: 30.0,
                 ),
                 child: TextFormField(
-                  decoration: loginInputDecoration('password'),
+                  decoration: SigninInputDecoration('password'),
                   obscureText: true,
                   onChanged: (String value) {
                     setState(() {
@@ -83,18 +84,28 @@ class _LoginPageState extends State<LoginPage> {
               ),
               Padding(
                 padding: const EdgeInsets.only(
-                  bottom: 30.0,
+                  bottom: 15.0,
                 ),
                 child: ElevatedButton(
-                  onPressed: (){
-                    //メールアドレスとパスワードを送る
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (context) {
-                            return HomePage();
-                          }
-                      ),
-                    );
+                  onPressed: () async {
+                    try {
+                      final FirebaseAuth auth = FirebaseAuth.instance;
+                      await auth.signInWithEmailAndPassword(
+                        email: email,
+                        password: password,
+                      );
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (context) {
+                              return HomePage();
+                            }
+                        ),
+                      );
+                    } catch (e) {
+                      setState(() {
+                        message = "failed in signin";
+                      });
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: themeColor.primary,
@@ -108,6 +119,17 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   child: const Text('sign in'),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                  bottom: 30.0,
+                ),
+                child: Text(
+                    message,
+                  style: TextStyle(
+                    color: themeColor.red,
+                  ),
                 ),
               ),
               Padding(

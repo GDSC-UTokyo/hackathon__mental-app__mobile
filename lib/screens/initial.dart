@@ -1,5 +1,5 @@
-import 'package:app/screens/home/login.dart';
-import 'package:app/screens/home/signup.dart';
+import 'package:app/screens/signin.dart';
+import 'package:app/screens/signup.dart';
 import 'package:app/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -42,7 +42,7 @@ class _InitialPageState extends State<InitialPage> {
                         Navigator.of(context).push(
                           MaterialPageRoute(
                               builder: (context) {
-                                return LoginPage();
+                                return SigninPage();
                               }
                           ),
                         );

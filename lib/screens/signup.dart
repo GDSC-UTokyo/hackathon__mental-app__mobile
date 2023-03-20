@@ -1,8 +1,9 @@
 import 'package:app/screens/home/home.dart';
 import 'package:app/theme/theme.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:app/screens/home/login.dart';
+import 'package:app/screens/signin.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -83,18 +84,28 @@ class _SignupPageState extends State<SignupPage> {
               ),
               Padding(
                 padding: const EdgeInsets.only(
-                  bottom: 30.0,
+                  bottom: 15.0,
                 ),
                 child: ElevatedButton(
-                  onPressed: () {
-                    //メールアドレスとパスワードを送る
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (context) {
-                            return HomePage();
-                          }
-                      ),
-                    );
+                  onPressed: () async {
+                    try {
+                      final FirebaseAuth auth = FirebaseAuth.instance;
+                      await auth.createUserWithEmailAndPassword(
+                        email: email,
+                        password: password,
+                      );
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (context) {
+                              return HomePage();
+                            }
+                        ),
+                      );
+                    } catch (e) {
+                      setState(() {
+                        message = "failed in signup";
+                      });
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: themeColor.primary,
@@ -112,6 +123,17 @@ class _SignupPageState extends State<SignupPage> {
               ),
               Padding(
                 padding: const EdgeInsets.only(
+                  bottom: 30.0,
+                ),
+                child: Text(
+                  message,
+                  style: TextStyle(
+                    color: themeColor.red,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
                   bottom: 15.0,
                 ),
                 child: TextButton(
@@ -123,7 +145,7 @@ class _SignupPageState extends State<SignupPage> {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) {
-                          return LoginPage();
+                          return SigninPage();
                         }
                       ),
                     );
