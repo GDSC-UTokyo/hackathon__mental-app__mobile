@@ -1,0 +1,32 @@
+{
+    "dart.flutterSdkPath": ".fvm/flutter_sdk",
+    "search.exclude": {
+      "**/.fvm": true
+    },
+    "files.watcherExclude": {
+      "**/.fvm": true
+    },
+    "[dart]": {
+      "editor.formatOnSave": true,
+      "editor.codeActionsOnSave": {
+        "source.fixAll": true
+      },
+      "editor.rulers": [80]
+    },
+    "cSpell.words": [
+      "Acceler",
+      "Avenir",
+      "fullscreen",
+      "Inupathy",
+      "mypage",
+      "nodoc",
+      "Noto",
+      "recase",
+      "RGBO",
+      "riverpod",
+      "Ssid",
+      "syncfusion",
+      "usecase"
+    ]
+  }
+  
