@@ -12,7 +12,7 @@ class CreateReportPage extends StatefulWidget {
 
 class Reason {
   String id;
-  String reason; // reasonIdsを入れる
+  String reason;
 
   Reason(this.id, this.reason);
 }
@@ -101,7 +101,7 @@ class _CreateReportPageState extends State<CreateReportPage> {
             const SizedBox(height: 8),
             Container(
               padding: const EdgeInsets.only(
-                top: 10,
+                top: 0,
               ),
               alignment: const Alignment(-0.8, 0),
               child: const Text(
