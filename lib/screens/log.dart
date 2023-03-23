@@ -108,8 +108,12 @@ class _LogPageState extends State<LogPage> {
                       onPressed: () => {
                         Navigator.of(context).push(
                           MaterialPageRoute(builder: (context) {
-                            return const EditReportPage();
-                          }),
+                            return EditReportPage(
+                              date: reports[index].date,
+                              point: reports[index].point.toString(),
+                              reasonIdList: reports[index].reasonIdList.join(','),
+                            );
+                          })
                         ),
                       },
                     ),
