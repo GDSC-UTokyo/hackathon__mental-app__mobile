@@ -2,6 +2,7 @@ import 'package:app/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:provider/provider.dart';
+import 'package:app/components/footer.dart';
 import 'dart:math';
 
 class HomePage extends StatefulWidget {
@@ -59,6 +60,7 @@ class _HomePageState extends State<HomePage> {
     final themeColor = Provider.of<ThemeProvider>(context).theme.colorTheme;
 
     return Scaffold(
+      backgroundColor: themeColor.background,
       appBar: AppBar(
         title: const Text('Home'),
         backgroundColor: themeColor.primary,
@@ -106,22 +108,29 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
-            Expanded(
-              child: SfCartesianChart(
-                primaryXAxis: DateTimeAxis(),
-                series: <ChartSeries<Data, DateTime>>[
-                  LineSeries<Data, DateTime>(
-                    dataSource: _data,
-                    xValueMapper: (Data data, _) => data.date,
-                    yValueMapper: (Data data, _) => data.value,
-                  ),
-                ],
-                primaryYAxis: NumericAxis(minimum: yAxisMin, maximum: yAxisMax),
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 15.0,
               ),
-            ),
+              child: Expanded(
+                child: SfCartesianChart(
+                  backgroundColor: themeColor.white.first,
+                  primaryXAxis: DateTimeAxis(),
+                  series: <ChartSeries<Data, DateTime>>[
+                    LineSeries<Data, DateTime>(
+                      dataSource: _data,
+                      xValueMapper: (Data data, _) => data.date,
+                      yValueMapper: (Data data, _) => data.value,
+                    ),
+                  ],
+                  primaryYAxis: NumericAxis(minimum: yAxisMin, maximum: yAxisMax),
+                ),
+              ),
+            )
           ],
         ),
       ),
+      bottomNavigationBar: Footer(),
     );
   }
 }

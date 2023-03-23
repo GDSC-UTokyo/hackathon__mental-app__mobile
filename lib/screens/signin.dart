@@ -1,4 +1,4 @@
-import 'package:app/screens/home/home.dart';
+import 'package:app/screens/home.dart';
 import 'package:app/screens/signup.dart';
 import 'package:app/theme/theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
