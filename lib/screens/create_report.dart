@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:app/theme/theme.dart';
+import 'package:intl/intl.dart';
 
 class CreateReportPage extends StatefulWidget {
   const CreateReportPage({super.key});
@@ -9,16 +10,30 @@ class CreateReportPage extends StatefulWidget {
   _CreateReportPageState createState() => _CreateReportPageState();
 }
 
+class Reason {
+  String id;
+  String reason; // reasonIdsを入れる
+
+  Reason(this.id, this.reason);
+}
+
 class _CreateReportPageState extends State<CreateReportPage> {
   double mentalPoint = 50.0;
-  final now = DateTime.now();
+  List<Reason> reasonList = [
+    Reason("1", "睡眠不足"),
+    Reason("2", "恋愛"),
+    Reason("3", "趣味"),
+    Reason("4", "仕事"),
+    Reason("5", "友達"),
+  ];
+  var selectedIdList = <String>[];
 
   @override
   Widget build(BuildContext context) {
     final themeColor = Provider.of<ThemeProvider>(context).theme.colorTheme;
-    // DateTime now = DateTime.now();
-    // DateFormat outputFormat = DateFormat('yyyy-MM-dd');
-    // String date = outputFormat.format(now);
+    DateTime now = DateTime.now();
+    DateFormat outputFormat = DateFormat('yyyy-MM-dd');
+    String date = outputFormat.format(now);
 
     return Scaffold(
       backgroundColor: themeColor.background,
@@ -28,7 +43,7 @@ class _CreateReportPageState extends State<CreateReportPage> {
       ),
       body: Container(
         padding: const EdgeInsets.all(16),
-        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        margin: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           color: Colors.white,
@@ -36,19 +51,16 @@ class _CreateReportPageState extends State<CreateReportPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              alignment: const Alignment(-0.8,0),
-              child: const Text(
-                'Date',
-                style: TextStyle(
-                  //fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
+            Text(
+              date,
+              style: const TextStyle(
+                //fontWeight: FontWeight.bold,
+                fontSize: 16,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 12),
             Container(
-              alignment: const Alignment(-0.8,0),
+              alignment: const Alignment(-0.8, 0),
               child: const Text(
                 'Mental Point',
                 style: TextStyle(
@@ -74,9 +86,9 @@ class _CreateReportPageState extends State<CreateReportPage> {
               ),
               child: Slider(
                 value: mentalPoint,
-                onChanged:  (value) {
+                onChanged: (value) {
                   setState(() {
-                      mentalPoint = value;
+                    mentalPoint = value;
                   });
                 },
                 min: 0.0,
@@ -88,7 +100,10 @@ class _CreateReportPageState extends State<CreateReportPage> {
             ),
             const SizedBox(height: 8),
             Container(
-              alignment: const Alignment(-0.8,0),
+              padding: const EdgeInsets.only(
+                top: 10,
+              ),
+              alignment: const Alignment(-0.8, 0),
               child: const Text(
                 'Reason',
                 style: TextStyle(
@@ -97,27 +112,65 @@ class _CreateReportPageState extends State<CreateReportPage> {
                 ),
               ),
             ),
-            Container(
-              alignment: Alignment.center,
-              child: Text(
-                "sleepy",
-                style: const TextStyle(
-                  //fontWeight: FontWeight.bold,
-                  fontSize: 24,
-                ),
+            Center(
+              child: Padding(
+                  padding: const EdgeInsets.only(
+                    top: 20,
+                  ),
+                  child: Column(
+                    children: [
+                      Wrap(
+                        runSpacing: 16,
+                        spacing: 16,
+                        children: reasonList.map((reason) {
+                          final isSelected = selectedIdList.contains(reason.id);
+                          return InkWell(
+                            borderRadius: const BorderRadius.all(Radius.circular(32)),
+                            onTap: () {
+                              if (isSelected) {
+                                selectedIdList.remove(reason.id);
+                              } else {
+                                selectedIdList.add(reason.id);
+                              }
+                              setState(() {});
+                            },
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                              decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.all(Radius.circular(32)),
+                                border: Border.all(
+                                  width: 2,
+                                  color: themeColor.secondary,
+                                ),
+                                color: isSelected ? themeColor.secondary : null,
+                              ),
+                              child: Text(
+                                reason.reason,
+                                style: TextStyle(
+                                  color: isSelected ? themeColor.white[0] : themeColor.secondary,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      )
+                    ],
+                  )
               ),
             ),
             Center(
               child: Padding(
                 padding: const EdgeInsets.only(
-                  top: 20,
+                  top: 30,
                 ),
                 child: ElevatedButton(
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
                     backgroundColor: themeColor.primary,
                     foregroundColor: themeColor.white.first,
-                    fixedSize: const Size(200,40),
+                    fixedSize: const Size(200, 40),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),

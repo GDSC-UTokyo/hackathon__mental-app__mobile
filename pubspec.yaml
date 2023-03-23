@@ -41,6 +41,7 @@ dependencies:
   google_fonts: ^4.0.3
   firebase_auth: ^4.2.2
   firebase_core: ^2.8.0
+  intl: ^0.18.0
 
 dependency_overrides:
   intl: ^0.18.0
