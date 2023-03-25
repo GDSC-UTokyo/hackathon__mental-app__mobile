@@ -1,3 +1,8 @@
+import 'dart:math';
+
+import 'package:app/provider/reason.dart';
+import 'package:app/provider/report.dart';
+import 'package:app/screens/log.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:app/theme/theme.dart';
@@ -10,27 +15,14 @@ class CreateReportPage extends StatefulWidget {
   _CreateReportPageState createState() => _CreateReportPageState();
 }
 
-class Reason {
-  String id;
-  String reason;
-
-  Reason(this.id, this.reason);
-}
-
 class _CreateReportPageState extends State<CreateReportPage> {
   double mentalPoint = 50.0;
-  List<Reason> reasonList = [
-    Reason("1", "睡眠不足"),
-    Reason("2", "恋愛"),
-    Reason("3", "趣味"),
-    Reason("4", "仕事"),
-    Reason("5", "友達"),
-  ];
   var selectedIdList = <String>[];
 
   @override
   Widget build(BuildContext context) {
     final themeColor = Provider.of<ThemeProvider>(context).theme.colorTheme;
+    List<Reason> reasonList = context.watch<ReasonProvider>().reasons;
     DateTime now = DateTime.now();
     DateFormat outputFormat = DateFormat('yyyy-MM-dd');
     String date = outputFormat.format(now);
@@ -166,7 +158,16 @@ class _CreateReportPageState extends State<CreateReportPage> {
                   top: 30,
                 ),
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    context.read<ReportProvider>().create(
+                        Report(Random().nextInt(10000000).toString(), date, mentalPoint.toInt(), selectedIdList)
+                    );
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) {
+                          return const LogPage();
+                        })
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: themeColor.primary,
                     foregroundColor: themeColor.white.first,

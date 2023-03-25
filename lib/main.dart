@@ -1,3 +1,5 @@
+import 'package:app/provider/reason.dart';
+import 'package:app/provider/report.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +25,12 @@ Future<void> main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider<ReasonProvider>(
+          create: (BuildContext context) => ReasonProvider(),
+        ),
+        ChangeNotifierProvider<ReportProvider>(
+          create: (BuildContext context) => ReportProvider(),
+        ),
       ],
       child: const MyApp(),
     ),

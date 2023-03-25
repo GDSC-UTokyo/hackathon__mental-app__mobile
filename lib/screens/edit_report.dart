@@ -1,14 +1,18 @@
+import 'package:app/provider/reason.dart';
+import 'package:app/provider/report.dart';
 import 'package:app/screens/log.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:app/theme/theme.dart';
 
 class EditReportPage extends StatefulWidget {
+  final String id;
   final String date;
   final String point;
   final String reasonIdList;
   const EditReportPage(
       {super.key,
+      required this.id,
       required this.date,
       required this.point,
       required this.reasonIdList});
@@ -19,27 +23,23 @@ class EditReportPage extends StatefulWidget {
 
 class _EditReportPageState extends State<EditReportPage> {
   double mentalPoint = 50.0;
-  List<Reason> reasonList = [
-    Reason("1", "睡眠不足"),
-    Reason("2", "恋愛"),
-    Reason("3", "趣味"),
-    Reason("4", "仕事"),
-    Reason("5", "友達"),
-  ];
   var selectedIdList = <String>[];
+  late String id;
 
   @override
   void initState() {
     super.initState();
 
-   mentalPoint = int.parse(widget.point).toDouble();
-   selectedIdList = widget.reasonIdList.split(',');
+    id = widget.id;
+    mentalPoint = int.parse(widget.point).toDouble();
+    selectedIdList = widget.reasonIdList.split(',');
   }
 
   @override
   Widget build(BuildContext context) {
     final themeColor = Provider.of<ThemeProvider>(context).theme.colorTheme;
     final date = widget.date;
+    List<Reason> reasonList = context.watch<ReasonProvider>().reasons;
 
     return Scaffold(
       backgroundColor: themeColor.background,
@@ -172,7 +172,16 @@ class _EditReportPageState extends State<EditReportPage> {
                     top: 30,
                   ),
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      context.read<ReportProvider>().edit(
+                        Report(id, date, mentalPoint.toInt(), selectedIdList)
+                      );
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) {
+                            return const LogPage();
+                          })
+                      );
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: themeColor.primary,
                       foregroundColor: themeColor.white.first,
