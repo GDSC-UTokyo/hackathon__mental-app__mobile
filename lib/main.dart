@@ -25,11 +25,14 @@ Future<void> main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
-        ChangeNotifierProvider<ReasonProvider>(
-          create: (BuildContext context) => ReasonProvider(),
+        ChangeNotifierProvider<ReasonsProvider>(
+          create: (BuildContext context) => ReasonsProvider(),
         ),
-        ChangeNotifierProvider<ReportProvider>(
-          create: (BuildContext context) => ReportProvider(),
+        ChangeNotifierProvider<ReportsProvider>(
+          create: (BuildContext context) => ReportsProvider(),
+        ),
+        ChangeNotifierProvider<CurrentReportProvider>(
+          create: (BuildContext context) => CurrentReportProvider(),
         ),
       ],
       child: const MyApp(),

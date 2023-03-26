@@ -27,12 +27,7 @@ class MyApp extends StatelessWidget {
             '/log': (_) => const MaterialPage(child: LogPage()),
             '/report/create': (_) => const MaterialPage(child: CreateReportPage()),
             '/report/edit': (routeData) {
-              return MaterialPage(child: EditReportPage(
-                id: routeData.queryParameters['id']!,
-                date: routeData.queryParameters['date']!,
-                point: routeData.queryParameters['point']!,
-                reasonIdList: routeData.queryParameters['reasonIdList']!,
-              ));
+              return MaterialPage(child: EditReportPage());
             },
           },
         ),
