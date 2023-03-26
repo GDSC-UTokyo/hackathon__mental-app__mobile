@@ -2,7 +2,6 @@ import 'package:app/provider/reason.dart';
 import 'package:app/provider/report.dart';
 import 'package:app/screens/log.dart';
 import 'package:app/screens/reason.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:app/theme/theme.dart';
