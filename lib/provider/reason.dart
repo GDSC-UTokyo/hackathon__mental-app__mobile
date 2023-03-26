@@ -17,7 +17,7 @@ bool hasSameReasonId(String reasonId, List<Reason> reasons) {
   return hasSameId;
 }
 
-class ReasonProvider extends ChangeNotifier {
+class ReasonsProvider extends ChangeNotifier {
   final List<Reason> _reasons = [];
 
   List<Reason> get reasons => _reasons;

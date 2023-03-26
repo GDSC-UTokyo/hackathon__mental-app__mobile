@@ -8,16 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:app/theme/theme.dart';
 
 class EditReportPage extends StatefulWidget {
-  final String id;
-  final String date;
-  final String point;
-  final String reasonIdList;
-  const EditReportPage(
-      {super.key,
-      required this.id,
-      required this.date,
-      required this.point,
-      required this.reasonIdList});
+  const EditReportPage({super.key});
 
   @override
   _EditReportPageState createState() => _EditReportPageState();
@@ -32,20 +23,17 @@ class _EditReportPageState extends State<EditReportPage> {
   void initState() {
     super.initState();
 
-    id = widget.id;
-    mentalPoint = int.parse(widget.point).toDouble();
-    if (widget.reasonIdList == '') {
-      selectedIdList = [];
-    } else {
-      selectedIdList = widget.reasonIdList.split(',');
-    }
+    final currentReport = context.read<CurrentReportProvider>().report;
+    id = currentReport.id;
+    mentalPoint = currentReport.point.toDouble();
+    selectedIdList = currentReport.reasonIdList;
   }
 
   @override
   Widget build(BuildContext context) {
     final themeColor = Provider.of<ThemeProvider>(context).theme.colorTheme;
-    final date = widget.date;
-    List<Reason> reasonList = context.watch<ReasonProvider>().reasons;
+    final date = context.read<CurrentReportProvider>().report.date;
+    List<Reason> reasonList = context.watch<ReasonsProvider>().reasons;
 
     return Scaffold(
       backgroundColor: themeColor.background,
@@ -104,6 +92,7 @@ class _EditReportPageState extends State<EditReportPage> {
                 onChanged: (value) {
                   setState(() {
                     mentalPoint = value;
+                    context.read<CurrentReportProvider>().updatePoint(mentalPoint.toInt());
                   });
                 },
                 min: 0.0,
@@ -156,8 +145,10 @@ class _EditReportPageState extends State<EditReportPage> {
                             onTap: () {
                               if (isSelected) {
                                 selectedIdList.remove(reason.id);
+                                context.read<CurrentReportProvider>().updateReasonIdList(selectedIdList);
                               } else {
                                 selectedIdList.add(reason.id);
+                                context.read<CurrentReportProvider>().updateReasonIdList(selectedIdList);
                               }
                               setState(() {});
                             },
@@ -194,7 +185,7 @@ class _EditReportPageState extends State<EditReportPage> {
                   ),
                   child: ElevatedButton(
                     onPressed: () {
-                      context.read<ReportProvider>().edit(
+                      context.read<ReportsProvider>().edit(
                         Report(id, date, mentalPoint.toInt(), selectedIdList)
                       );
                       Navigator.of(context).push(

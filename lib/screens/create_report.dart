@@ -23,7 +23,7 @@ class _CreateReportPageState extends State<CreateReportPage> {
   @override
   Widget build(BuildContext context) {
     final themeColor = Provider.of<ThemeProvider>(context).theme.colorTheme;
-    List<Reason> reasonList = context.watch<ReasonProvider>().reasons;
+    List<Reason> reasonList = context.watch<ReasonsProvider>().reasons;
     DateTime now = DateTime.now();
     DateFormat outputFormat = DateFormat('yyyy-MM-dd');
     String date = outputFormat.format(now);
@@ -175,7 +175,7 @@ class _CreateReportPageState extends State<CreateReportPage> {
                 ),
                 child: ElevatedButton(
                   onPressed: () {
-                    context.read<ReportProvider>().create(
+                    context.read<ReportsProvider>().create(
                         Report(Random().nextInt(10000000).toString(), date, mentalPoint.toInt(), selectedIdList)
                     );
                     Navigator.of(context).push(

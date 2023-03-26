@@ -41,18 +41,18 @@ class _LogPageState extends State<LogPage> {
   void initState() {
     super.initState();
 
-    context.read<ReasonProvider>().create(Reason("1", "睡眠不足"));
-    context.read<ReasonProvider>().create(Reason("2", "恋愛"));
-    context.read<ReasonProvider>().create(Reason("3", "趣味"));
-    context.read<ReasonProvider>().create(Reason("4", "仕事"));
-    context.read<ReasonProvider>().create(Reason("5", "友達"));
+    context.read<ReasonsProvider>().create(Reason("1", "睡眠不足"));
+    context.read<ReasonsProvider>().create(Reason("2", "恋愛"));
+    context.read<ReasonsProvider>().create(Reason("3", "趣味"));
+    context.read<ReasonsProvider>().create(Reason("4", "仕事"));
+    context.read<ReasonsProvider>().create(Reason("5", "友達"));
   }
 
   @override
   Widget build(BuildContext context) {
     final themeColor = Provider.of<ThemeProvider>(context).theme.colorTheme;
-    List<Reason> reasonList = context.watch<ReasonProvider>().reasons;
-    List<Report> reports = context.watch<ReportProvider>().reports;
+    List<Reason> reasonList = context.watch<ReasonsProvider>().reasons;
+    List<Report> reports = context.watch<ReportsProvider>().reports;
 
     return Scaffold(
       backgroundColor: themeColor.background,
@@ -87,14 +87,10 @@ class _LogPageState extends State<LogPage> {
                       IconButton(
                         icon: const Icon(Icons.edit),
                         onPressed: () => {
+                          context.read<CurrentReportProvider>().updateAll(reports[index]),
                           Navigator.of(context).push(
                             MaterialPageRoute(builder: (context) {
-                              return EditReportPage(
-                                id: reports[index].id,
-                                date: reports[index].date,
-                                point: reports[index].point.toString(),
-                                reasonIdList: reports[index].reasonIdList.join(','),
-                              );
+                              return const EditReportPage();
                             })
                           ),
                         },
