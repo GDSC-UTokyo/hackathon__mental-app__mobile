@@ -1,5 +1,8 @@
+import 'package:app/screens/create_reason.dart';
+import 'package:app/screens/edit_reason.dart';
 import 'package:app/screens/initial.dart';
 import 'package:app/screens/log.dart';
+import 'package:app/screens/reason.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:flutter/material.dart';
 import 'package:app/screens/home.dart';
@@ -26,9 +29,10 @@ class MyApp extends StatelessWidget {
             '/signup': (_) => const MaterialPage(child: SignupPage()),
             '/log': (_) => const MaterialPage(child: LogPage()),
             '/report/create': (_) => const MaterialPage(child: CreateReportPage()),
-            '/report/edit': (routeData) {
-              return MaterialPage(child: EditReportPage());
-            },
+            '/report/edit': (_) => const MaterialPage(child: EditReportPage()),
+            '/reason': (_) => const MaterialPage(child: ReasonPage()),
+            '/reason/create': (_) => const MaterialPage(child: CreateReasonPage()),
+            '/reason/edit': (_) => const MaterialPage(child: EditReasonPage()),
           },
         ),
       ),
