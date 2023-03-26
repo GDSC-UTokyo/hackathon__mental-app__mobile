@@ -1,6 +1,8 @@
 import 'package:app/provider/reason.dart';
 import 'package:app/provider/report.dart';
 import 'package:app/screens/log.dart';
+import 'package:app/screens/reason.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:app/theme/theme.dart';
@@ -32,7 +34,11 @@ class _EditReportPageState extends State<EditReportPage> {
 
     id = widget.id;
     mentalPoint = int.parse(widget.point).toDouble();
-    selectedIdList = widget.reasonIdList.split(',');
+    if (widget.reasonIdList == '') {
+      selectedIdList = [];
+    } else {
+      selectedIdList = widget.reasonIdList.split(',');
+    }
   }
 
   @override
@@ -57,6 +63,7 @@ class _EditReportPageState extends State<EditReportPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const SizedBox(height: 12),
             Text(
               date,
               style: const TextStyle(
@@ -66,7 +73,7 @@ class _EditReportPageState extends State<EditReportPage> {
             ),
             const SizedBox(height: 12),
             Container(
-              alignment: const Alignment(-0.8, 0),
+              alignment: Alignment.center,
               child: const Text(
                 'Mental Point',
                 style: TextStyle(
@@ -75,6 +82,7 @@ class _EditReportPageState extends State<EditReportPage> {
                 ),
               ),
             ),
+            const SizedBox(height: 16),
             Container(
               alignment: Alignment.center,
               child: Text(
@@ -85,6 +93,7 @@ class _EditReportPageState extends State<EditReportPage> {
                 ),
               ),
             ),
+            const SizedBox(height: 4),
             Padding(
               padding: const EdgeInsets.only(
                 right: 16,
@@ -105,18 +114,30 @@ class _EditReportPageState extends State<EditReportPage> {
               ),
             ),
             const SizedBox(height: 8),
-            Container(
-              padding: const EdgeInsets.only(
-                top: 0,
-              ),
-              alignment: const Alignment(-0.8, 0),
-              child: const Text(
-                'Reason',
-                style: TextStyle(
-                  //fontWeight: FontWeight.bold,
-                  fontSize: 20,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text(
+                  'Reason',
+                  style: TextStyle(
+                    //fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
                 ),
-              ),
+                IconButton(
+                  icon: const Icon(Icons.edit_note),
+                  onPressed: () => {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (context) {
+                            return const ReasonPage();
+                          }
+                      ),
+                    )
+                  },
+                ),
+              ],
             ),
             Center(
               child: Padding(
