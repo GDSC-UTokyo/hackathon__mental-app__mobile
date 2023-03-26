@@ -1,3 +1,9 @@
+import 'dart:math';
+
+import 'package:app/provider/reason.dart';
+import 'package:app/provider/report.dart';
+import 'package:app/screens/log.dart';
+import 'package:app/screens/reason.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:app/theme/theme.dart';
@@ -10,27 +16,14 @@ class CreateReportPage extends StatefulWidget {
   _CreateReportPageState createState() => _CreateReportPageState();
 }
 
-class Reason {
-  String id;
-  String reason;
-
-  Reason(this.id, this.reason);
-}
-
 class _CreateReportPageState extends State<CreateReportPage> {
   double mentalPoint = 50.0;
-  List<Reason> reasonList = [
-    Reason("1", "睡眠不足"),
-    Reason("2", "恋愛"),
-    Reason("3", "趣味"),
-    Reason("4", "仕事"),
-    Reason("5", "友達"),
-  ];
   var selectedIdList = <String>[];
 
   @override
   Widget build(BuildContext context) {
     final themeColor = Provider.of<ThemeProvider>(context).theme.colorTheme;
+    List<Reason> reasonList = context.watch<ReasonProvider>().reasons;
     DateTime now = DateTime.now();
     DateFormat outputFormat = DateFormat('yyyy-MM-dd');
     String date = outputFormat.format(now);
@@ -51,6 +44,7 @@ class _CreateReportPageState extends State<CreateReportPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const SizedBox(height: 12),
             Text(
               date,
               style: const TextStyle(
@@ -60,7 +54,7 @@ class _CreateReportPageState extends State<CreateReportPage> {
             ),
             const SizedBox(height: 12),
             Container(
-              alignment: const Alignment(-0.8, 0),
+              alignment: Alignment.center,
               child: const Text(
                 'Mental Point',
                 style: TextStyle(
@@ -69,6 +63,7 @@ class _CreateReportPageState extends State<CreateReportPage> {
                 ),
               ),
             ),
+            const SizedBox(height: 16),
             Container(
               alignment: Alignment.center,
               child: Text(
@@ -79,6 +74,7 @@ class _CreateReportPageState extends State<CreateReportPage> {
                 ),
               ),
             ),
+            const SizedBox(height: 4),
             Padding(
               padding: const EdgeInsets.only(
                 right: 16,
@@ -99,18 +95,30 @@ class _CreateReportPageState extends State<CreateReportPage> {
               ),
             ),
             const SizedBox(height: 8),
-            Container(
-              padding: const EdgeInsets.only(
-                top: 0,
-              ),
-              alignment: const Alignment(-0.8, 0),
-              child: const Text(
-                'Reason',
-                style: TextStyle(
-                  //fontWeight: FontWeight.bold,
-                  fontSize: 20,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text(
+                  'Reason',
+                  style: TextStyle(
+                    //fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
                 ),
-              ),
+                IconButton(
+                  icon: const Icon(Icons.edit_note),
+                  onPressed: () => {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (context) {
+                            return const ReasonPage();
+                          }
+                      ),
+                    )
+                  },
+                ),
+              ],
             ),
             Center(
               child: Padding(
@@ -166,7 +174,16 @@ class _CreateReportPageState extends State<CreateReportPage> {
                   top: 30,
                 ),
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    context.read<ReportProvider>().create(
+                        Report(Random().nextInt(10000000).toString(), date, mentalPoint.toInt(), selectedIdList)
+                    );
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) {
+                          return const LogPage();
+                        })
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: themeColor.primary,
                     foregroundColor: themeColor.white.first,

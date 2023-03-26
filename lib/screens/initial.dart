@@ -70,9 +70,9 @@ class _InitialPageState extends State<InitialPage> {
                         //メールアドレスとパスワードを送る
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                              builder: (context) {
-                                return SignupPage();
-                              }
+                            builder: (context) {
+                              return const SignupPage();
+                            }
                           ),
                         );
                       },
