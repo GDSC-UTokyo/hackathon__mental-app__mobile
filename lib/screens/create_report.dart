@@ -19,6 +19,7 @@ class CreateReportPage extends StatefulWidget {
 class _CreateReportPageState extends State<CreateReportPage> {
   double mentalPoint = 50.0;
   var selectedIdList = <String>[];
+  String message = '';
 
   @override
   Widget build(BuildContext context) {
@@ -85,6 +86,7 @@ class _CreateReportPageState extends State<CreateReportPage> {
                 onChanged: (value) {
                   setState(() {
                     mentalPoint = value;
+                    context.read<CurrentReportProvider>().updatePoint(mentalPoint.toInt());
                   });
                 },
                 min: 0.0,
@@ -137,8 +139,10 @@ class _CreateReportPageState extends State<CreateReportPage> {
                             onTap: () {
                               if (isSelected) {
                                 selectedIdList.remove(reason.id);
+                                context.read<CurrentReportProvider>().updateReasonIdList(selectedIdList);
                               } else {
                                 selectedIdList.add(reason.id);
+                                context.read<CurrentReportProvider>().updateReasonIdList(selectedIdList);
                               }
                               setState(() {});
                             },
@@ -171,18 +175,42 @@ class _CreateReportPageState extends State<CreateReportPage> {
             Center(
               child: Padding(
                 padding: const EdgeInsets.only(
-                  top: 30,
+                  top: 15,
+                  bottom: 15,
+                ),
+                child: Text(
+                  message,
+                  style: TextStyle(
+                    color: themeColor.red,
+                  ),
+                ),
+              ),
+            ),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  top: 0,
                 ),
                 child: ElevatedButton(
                   onPressed: () {
-                    context.read<ReportsProvider>().create(
-                        Report(Random().nextInt(10000000).toString(), date, mentalPoint.toInt(), selectedIdList)
-                    );
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) {
-                          return const LogPage();
-                        })
-                    );
+                    if (selectedIdList.isNotEmpty) {
+                      final id = Random().nextInt(10000000).toString();
+                      context.read<CurrentReportProvider>().updateAll(
+                          Report(id, date, mentalPoint.toInt(), selectedIdList)
+                      );
+                      context.read<ReportsProvider>().create(
+                          Report(id, date, mentalPoint.toInt(), selectedIdList)
+                      );
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) {
+                            return const LogPage();
+                          })
+                      );
+                    } else {
+                      setState(() {
+                        message = "Select at least one reason";
+                      });
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: themeColor.primary,

@@ -18,6 +18,7 @@ class _EditReportPageState extends State<EditReportPage> {
   double mentalPoint = 50.0;
   var selectedIdList = <String>[];
   late String id;
+  String message = '';
 
   @override
   void initState() {
@@ -179,20 +180,43 @@ class _EditReportPageState extends State<EditReportPage> {
               ),
             ),
             Center(
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  top: 15,
+                  bottom: 15,
+                ),
+                child: Text(
+                  message,
+                  style: TextStyle(
+                    color: themeColor.red,
+                  ),
+                ),
+              ),
+            ),
+            Center(
                 child: Padding(
                   padding: const EdgeInsets.only(
-                    top: 30,
+                    top: 0,
                   ),
                   child: ElevatedButton(
                     onPressed: () {
-                      context.read<ReportsProvider>().edit(
-                        Report(id, date, mentalPoint.toInt(), selectedIdList)
-                      );
-                      Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) {
-                            return const LogPage();
-                          })
-                      );
+                      if (selectedIdList.isNotEmpty) {
+                        context.read<CurrentReportProvider>().updateAll(
+                            Report(id, date, mentalPoint.toInt(), selectedIdList)
+                        );
+                        context.read<ReportsProvider>().edit(
+                            Report(id, date, mentalPoint.toInt(), selectedIdList)
+                        );
+                        Navigator.of(context).push(
+                            MaterialPageRoute(builder: (context) {
+                              return const LogPage();
+                            })
+                        );
+                      } else {
+                        setState(() {
+                          message = "Select at least one reason";
+                        });
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: themeColor.primary,
