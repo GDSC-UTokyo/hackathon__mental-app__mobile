@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class AppColorTheme {
-
   const AppColorTheme({
     required this.primary,
     required this.secondary,
@@ -44,7 +43,7 @@ class AppColorTheme {
       yellow: const Color(0xffFFFFB5),
       lime: const Color(0xffEAFFB6),
       green: const Color(0xffBDFFB6),
-      paleBlue: const Color(0xffB7F2FF),
+      paleBlue: const Color(0xffE0FFFF),
       blue: const Color(0xffB8DEFF),
       indigo: const Color(0xffB9BFFF),
       purple: const Color(0xffE4B7FF),

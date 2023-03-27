@@ -65,72 +65,180 @@ class _HomePageState extends State<HomePage> {
         title: const Text('Home'),
         backgroundColor: themeColor.primary,
       ),
-      body: SizedBox(
-        height: 400,
+      body: Container(
+        padding: const EdgeInsets.all(16),
+        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: Colors.white,
+        ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: themeColor.primary),
-                  onPressed: () {
-                    setState(() {
-                      _period = 'week';
-                      _data = _generateData();
-                    });
-                  },
-                  child: const Text('Week'),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: themeColor.primary),
-                  onPressed: () {
-                    setState(() {
-                      _period = 'month';
-                      _data = _generateData();
-                    });
-                  },
-                  child: const Text('Month'),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: themeColor.primary),
-                  onPressed: () {
-                    setState(() {
-                      _period = 'year';
-                      _data = _generateData();
-                    });
-                  },
-                  child: const Text('Year'),
-                ),
-              ],
+            const Padding(
+              padding: EdgeInsets.all(20),
+              child: Text(
+                'Mental Point',
+                style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xff5E5E5E)),
+              ),
             ),
             Padding(
-              padding: const EdgeInsets.only(
-                top: 15.0,
+              padding: const EdgeInsets.only(left: 20, bottom: 20),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: const [
+                  Text(
+                    'Avg',
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xff5E5E5E)),
+                  ),
+                  Spacer(
+                    flex: 1,
+                  ),
+                  Text(
+                    '57',
+                    style: TextStyle(
+                        fontSize: 40,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xff5E5E5E)),
+                  ),
+                  Spacer(
+                    flex: 7,
+                  ),
+                ],
               ),
-              child: Expanded(
-                child: SfCartesianChart(
-                  backgroundColor: themeColor.white.first,
-                  primaryXAxis: DateTimeAxis(),
-                  series: <ChartSeries<Data, DateTime>>[
-                    LineSeries<Data, DateTime>(
-                      dataSource: _data,
-                      xValueMapper: (Data data, _) => data.date,
-                      yValueMapper: (Data data, _) => data.value,
+            ),
+            Align(
+              child: Container(
+                alignment: Alignment.center,
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: themeColor.background,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                constraints: const BoxConstraints(maxWidth: 290),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        backgroundColor: _period == "week"
+                            ? themeColor.paleBlue
+                            : themeColor.background,
+                        minimumSize: const Size(100, 50),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _period = 'week';
+                          _data = _generateData();
+                        });
+                      },
+                      child: const Text(
+                        'Week',
+                        style: TextStyle(
+                            color: Color(0xff5E5E5E),
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    TextButton(
+                      style: TextButton.styleFrom(
+                          backgroundColor: _period == "month"
+                              ? themeColor.paleBlue
+                              : themeColor.background,
+                          minimumSize: const Size(100, 50)),
+                      onPressed: () {
+                        setState(() {
+                          _period = 'month';
+                          _data = _generateData();
+                        });
+                      },
+                      child: const Text(
+                        'Month',
+                        style: TextStyle(
+                            color: Color(0xff5E5E5E),
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    TextButton(
+                      style: TextButton.styleFrom(
+                          backgroundColor: _period == "year"
+                              ? themeColor.paleBlue
+                              : themeColor.background,
+                          minimumSize: const Size(100, 50)),
+                      onPressed: () {
+                        setState(() {
+                          _period = 'year';
+                          _data = _generateData();
+                        });
+                      },
+                      child: const Text(
+                        'Year',
+                        style: TextStyle(
+                            color: Color(0xff5E5E5E),
+                            fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ],
-                  primaryYAxis: NumericAxis(minimum: yAxisMin, maximum: yAxisMax),
                 ),
               ),
-            )
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 40),
+              child: SfCartesianChart(
+                backgroundColor: Colors.white,
+                primaryXAxis: DateTimeAxis(
+                  labelStyle: TextStyle(
+                      color: themeColor.grey[4], fontWeight: FontWeight.bold),
+                  axisLine: AxisLine(color: themeColor.grey[4]),
+                  plotBands: <PlotBand>[
+                    PlotBand(
+                      isVisible: true,
+                      start: _data[0].date,
+                      end: _data[0].date,
+                      color: Colors.blue,
+                    )
+                  ],
+                  majorGridLines:
+                      const MajorGridLines(color: Colors.transparent),
+                  majorTickLines: MajorTickLines(color: themeColor.grey[4]),
+                ),
+                primaryYAxis: NumericAxis(
+                    axisLine: AxisLine(color: themeColor.grey[4], width: 1),
+                    minimum: yAxisMin,
+                    maximum: yAxisMax,
+                    labelStyle: TextStyle(
+                        color: themeColor.grey[4], fontWeight: FontWeight.bold),
+                    plotBands: <PlotBand>[
+                      PlotBand(
+                        start: 20,
+                        end: 40,
+                        color: const Color(0x00FAF7F0),
+                      ),
+                      PlotBand(
+                          start: 60, end: 80, color: const Color(0x00FAF7F0))
+                    ],
+                    majorGridLines:
+                        const MajorGridLines(color: Colors.transparent),
+                    majorTickLines: MajorTickLines(color: themeColor.grey[4])),
+                series: <ChartSeries<Data, DateTime>>[
+                  LineSeries<Data, DateTime>(
+                    color: themeColor.secondary,
+                    dataSource: _data,
+                    xValueMapper: (Data data, _) => data.date,
+                    yValueMapper: (Data data, _) => data.value,
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
-      bottomNavigationBar: Footer(),
+      bottomNavigationBar: const Footer(),
     );
   }
 }
