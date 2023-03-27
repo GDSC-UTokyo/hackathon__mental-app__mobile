@@ -86,14 +86,14 @@ class _EditReasonPageState extends State<EditReasonPage> {
                       message = 'reason column is empty';
                     });
                   } else {
-                    context.read<ReasonsProvider>().create(Reason(id, currentReason));
+                    context.read<ReasonsProvider>().edit(Reason(id, currentReason));
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                          builder: (context) {
-                            return const ReasonPage();
-                          }
-                        ),
-                      );
+                        builder: (context) {
+                          return const ReasonPage();
+                        }
+                      ),
+                    );
                   }
                 },
                 style: ElevatedButton.styleFrom(
