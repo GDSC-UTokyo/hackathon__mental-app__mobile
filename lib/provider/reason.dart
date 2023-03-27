@@ -40,3 +40,20 @@ class ReasonsProvider extends ChangeNotifier {
     notifyListeners();
   }
 }
+
+class CurrentReasonProvider extends ChangeNotifier {
+  final Reason _reason = Reason("", "");
+
+  Reason get reason => _reason;
+
+  void updateReason(String reason) {
+    _reason.reason = reason;
+    notifyListeners();
+  }
+
+  void updateAll(Reason reason) {
+    _reason.id = reason.id;
+    _reason.reason = reason.reason;
+    notifyListeners();
+  }
+}

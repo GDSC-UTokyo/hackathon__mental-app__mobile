@@ -1,5 +1,6 @@
 import 'package:app/provider/reason.dart';
 import 'package:app/provider/report.dart';
+import 'package:app/provider/currentReport.dart';
 import 'package:app/screens/log.dart';
 import 'package:app/screens/reason.dart';
 import 'package:flutter/material.dart';
@@ -40,6 +41,7 @@ class _EditReportPageState extends State<EditReportPage> {
       appBar: AppBar(
         title: const Text('Edit Report'),
         backgroundColor: themeColor.primary,
+        automaticallyImplyLeading: false,
       ),
       body: Container(
         padding: const EdgeInsets.all(16),
@@ -186,8 +188,8 @@ class _EditReportPageState extends State<EditReportPage> {
                 ),
                 child: Text(
                   message,
-                  style: TextStyle(
-                    color: themeColor.red,
+                  style: const TextStyle(
+                    color: Colors.red,
                   ),
                 ),
               ),
@@ -200,7 +202,7 @@ class _EditReportPageState extends State<EditReportPage> {
                   child: ElevatedButton(
                     onPressed: () {
                       if (selectedIdList.isNotEmpty) {
-                        context.read<CurrentReportProvider>().updateAll(
+                        context.read<CurrentReportProvider>().updateReport(
                             Report(id, date, mentalPoint.toInt(), selectedIdList)
                         );
                         context.read<ReportsProvider>().edit(

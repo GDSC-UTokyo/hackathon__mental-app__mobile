@@ -39,37 +39,3 @@ class ReportsProvider extends ChangeNotifier {
     notifyListeners();
   }
 }
-
-class CurrentReportProvider extends ChangeNotifier {
-  final Report _report = Report("", "", 0, []);
-
-  Report get report => _report;
-
-  void updateId(String id) {
-    _report.id = id;
-    notifyListeners();
-  }
-
-  void updateDate(String date) {
-    _report.date = date;
-    notifyListeners();
-  }
-
-  void updatePoint(int point) {
-    _report.point = point;
-    notifyListeners();
-  }
-
-  void updateReasonIdList(List<String> reasonIdList) {
-    _report.reasonIdList = reasonIdList;
-    notifyListeners();
-  }
-
-  void updateAll(Report report) {
-    _report.id = report.id;
-    _report.date = report.date;
-    _report.point = report.point;
-    _report.reasonIdList = report.reasonIdList;
-    notifyListeners();
-  }
-}

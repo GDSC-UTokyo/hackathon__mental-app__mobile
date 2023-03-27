@@ -1,5 +1,6 @@
 import 'package:app/provider/reason.dart';
 import 'package:app/provider/report.dart';
+import 'package:app/provider/currentReport.dart';
 import 'package:app/screens/create_report.dart';
 import 'package:app/screens/edit_report.dart';
 import 'package:app/theme/theme.dart';
@@ -41,11 +42,6 @@ class _LogPageState extends State<LogPage> {
   void initState() {
     super.initState();
 
-    context.read<ReasonsProvider>().create(Reason("1", "睡眠不足"));
-    context.read<ReasonsProvider>().create(Reason("2", "恋愛"));
-    context.read<ReasonsProvider>().create(Reason("3", "趣味"));
-    context.read<ReasonsProvider>().create(Reason("4", "仕事"));
-    context.read<ReasonsProvider>().create(Reason("5", "友達"));
   }
 
   @override
@@ -59,6 +55,7 @@ class _LogPageState extends State<LogPage> {
       appBar: AppBar(
         title: const Text('Log'),
         backgroundColor: themeColor.primary,
+        automaticallyImplyLeading: false,
       ),
       body: reports.isNotEmpty
         ? ListView.builder(
@@ -87,7 +84,8 @@ class _LogPageState extends State<LogPage> {
                       IconButton(
                         icon: const Icon(Icons.edit),
                         onPressed: () => {
-                          context.read<CurrentReportProvider>().updateAll(reports[index]),
+                          context.read<CurrentReportProvider>().updateMode(false),
+                          context.read<CurrentReportProvider>().updateReport(reports[index]),
                           Navigator.of(context).push(
                             MaterialPageRoute(builder: (context) {
                               return const EditReportPage();
@@ -154,32 +152,34 @@ class _LogPageState extends State<LogPage> {
                               runSpacing: 16,
                               spacing: 16,
                               children: reports[index].reasonIdList.map((id) {
-                                return InkWell(
-                                  borderRadius:
-                                    const BorderRadius.all(Radius.circular(32)),
-                                  child: AnimatedContainer(
-                                    duration: const Duration(milliseconds: 200),
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 16, vertical: 8
-                                    ),
-                                    decoration: BoxDecoration(
-                                      borderRadius: const BorderRadius.all(
-                                        Radius.circular(32)
+                                return Visibility(
+                                  visible: convertIdToReason(id, reasonList).isNotEmpty,
+                                  child: InkWell(
+                                    borderRadius: const BorderRadius.all(Radius.circular(32)),
+                                    child: AnimatedContainer(
+                                      duration: const Duration(milliseconds: 200),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16, vertical: 8
                                       ),
-                                      border: Border.all(
-                                        width: 2,
+                                      decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(32)
+                                        ),
+                                        border: Border.all(
+                                          width: 2,
+                                          color: themeColor.secondary,
+                                        ),
                                         color: themeColor.secondary,
                                       ),
-                                      color: themeColor.secondary,
-                                    ),
-                                    child: Text(
-                                      convertIdToReason(id, reasonList),
-                                      style: TextStyle(
-                                        color: themeColor.white[0],
-                                        fontWeight: FontWeight.bold,
+                                      child: Text(
+                                        convertIdToReason(id, reasonList),
+                                        style: TextStyle(
+                                          color: themeColor.white[0],
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
-                                  ),
+                                  )
                                 );
                               }).toList(),
                             )
@@ -208,6 +208,7 @@ class _LogPageState extends State<LogPage> {
           if (false) {
             return;
           } else {
+            context.read<CurrentReportProvider>().updateMode(true);
             Navigator.of(context).push(
               MaterialPageRoute(builder: (context) {
                 return const CreateReportPage();

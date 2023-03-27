@@ -64,6 +64,7 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text('Home'),
         backgroundColor: themeColor.primary,
+        automaticallyImplyLeading: false,
       ),
       body: SizedBox(
         height: 400,

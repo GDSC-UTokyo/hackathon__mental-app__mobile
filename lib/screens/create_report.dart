@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:app/provider/reason.dart';
 import 'package:app/provider/report.dart';
+import 'package:app/provider/currentReport.dart';
 import 'package:app/screens/log.dart';
 import 'package:app/screens/reason.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +35,7 @@ class _CreateReportPageState extends State<CreateReportPage> {
       appBar: AppBar(
         title: const Text('New Report'),
         backgroundColor: themeColor.primary,
+        automaticallyImplyLeading: false,
       ),
       body: Container(
         padding: const EdgeInsets.all(16),
@@ -180,8 +182,8 @@ class _CreateReportPageState extends State<CreateReportPage> {
                 ),
                 child: Text(
                   message,
-                  style: TextStyle(
-                    color: themeColor.red,
+                  style: const TextStyle(
+                    color: Colors.red,
                   ),
                 ),
               ),
@@ -195,7 +197,7 @@ class _CreateReportPageState extends State<CreateReportPage> {
                   onPressed: () {
                     if (selectedIdList.isNotEmpty) {
                       final id = Random().nextInt(10000000).toString();
-                      context.read<CurrentReportProvider>().updateAll(
+                      context.read<CurrentReportProvider>().updateReport(
                           Report(id, date, mentalPoint.toInt(), selectedIdList)
                       );
                       context.read<ReportsProvider>().create(
