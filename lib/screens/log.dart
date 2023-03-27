@@ -1,5 +1,6 @@
 import 'package:app/provider/reason.dart';
 import 'package:app/provider/report.dart';
+import 'package:app/provider/currentReport.dart';
 import 'package:app/screens/create_report.dart';
 import 'package:app/screens/edit_report.dart';
 import 'package:app/theme/theme.dart';
@@ -59,6 +60,7 @@ class _LogPageState extends State<LogPage> {
       appBar: AppBar(
         title: const Text('Log'),
         backgroundColor: themeColor.primary,
+        automaticallyImplyLeading: false,
       ),
       body: reports.isNotEmpty
         ? ListView.builder(
@@ -87,7 +89,8 @@ class _LogPageState extends State<LogPage> {
                       IconButton(
                         icon: const Icon(Icons.edit),
                         onPressed: () => {
-                          context.read<CurrentReportProvider>().updateAll(reports[index]),
+                          context.read<CurrentReportProvider>().updateMode(false),
+                          context.read<CurrentReportProvider>().updateReport(reports[index]),
                           Navigator.of(context).push(
                             MaterialPageRoute(builder: (context) {
                               return const EditReportPage();
@@ -208,6 +211,7 @@ class _LogPageState extends State<LogPage> {
           if (false) {
             return;
           } else {
+            context.read<CurrentReportProvider>().updateMode(true);
             Navigator.of(context).push(
               MaterialPageRoute(builder: (context) {
                 return const CreateReportPage();

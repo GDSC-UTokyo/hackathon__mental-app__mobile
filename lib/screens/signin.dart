@@ -94,11 +94,11 @@ class _SigninPageState extends State<SigninPage> {
                         email: email,
                         password: password,
                       );
-                      Navigator.of(context).push(
+                      await Navigator.of(context).push(
                         MaterialPageRoute(
-                            builder: (context) {
-                              return HomePage();
-                            }
+                          builder: (context) {
+                            return HomePage();
+                          }
                         ),
                       );
                     } catch (e) {
@@ -127,8 +127,8 @@ class _SigninPageState extends State<SigninPage> {
                 ),
                 child: Text(
                     message,
-                  style: TextStyle(
-                    color: themeColor.red,
+                  style: const TextStyle(
+                    color: Colors.red,
                   ),
                 ),
               ),
@@ -144,9 +144,9 @@ class _SigninPageState extends State<SigninPage> {
                   onPressed: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                          builder: (context) {
-                            return SignupPage();
-                          }
+                        builder: (context) {
+                          return const SignupPage();
+                        }
                       ),
                     );
                   },

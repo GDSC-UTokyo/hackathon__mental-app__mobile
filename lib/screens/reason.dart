@@ -1,5 +1,8 @@
+import 'package:app/provider/currentReport.dart';
 import 'package:app/screens/create_reason.dart';
+import 'package:app/screens/create_report.dart';
 import 'package:app/screens/edit_reason.dart';
+import 'package:app/screens/edit_report.dart';
 import 'package:flutter/material.dart';
 import 'package:app/theme/theme.dart';
 import 'package:provider/provider.dart';
@@ -17,10 +20,29 @@ class _ReasonPageState extends State<ReasonPage> {
   Widget build(BuildContext context) {
     final themeColor = Provider.of<ThemeProvider>(context).theme.colorTheme;
     List<Reason> reasonList = context.watch<ReasonsProvider>().reasons;
+    final isCreateMode = context.watch<CurrentReportProvider>().report.isCreateMode;
 
     return Scaffold(
       backgroundColor: themeColor.background,
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            if (isCreateMode) {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) {
+                  return const CreateReportPage();
+                }),
+              );
+            } else {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) {
+                  return const EditReportPage();
+                }),
+              );
+            }
+          },
+        ),
         title: const Text('Reason'),
         backgroundColor: themeColor.primary,
       ),
@@ -45,7 +67,7 @@ class _ReasonPageState extends State<ReasonPage> {
                     Text(
                       reasonList[index].reason,
                       style: const TextStyle(
-                        //fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.bold,
                         fontSize: 16,
                       ),
                     ),
@@ -55,6 +77,7 @@ class _ReasonPageState extends State<ReasonPage> {
                           icon: const Icon(Icons.edit),
                           color: Colors.green,
                           onPressed: () => {
+                            context.read<CurrentReasonProvider>().updateAll(reasonList[index]),
                             Navigator.of(context).push(
                               MaterialPageRoute(builder: (context) {
                                 return const EditReasonPage();
@@ -79,9 +102,9 @@ class _ReasonPageState extends State<ReasonPage> {
         )
         : const Center(
           child: Text(
-            "no report",
+            "no reason",
             style: TextStyle(fontSize: 32, color: Colors.grey),
-            ),
+          ),
         ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: themeColor.primary,

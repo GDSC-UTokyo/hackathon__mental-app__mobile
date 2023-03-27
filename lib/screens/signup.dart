@@ -94,10 +94,10 @@ class _SignupPageState extends State<SignupPage> {
                         email: email,
                         password: password,
                       );
-                      Navigator.of(context).push(
+                      await Navigator.of(context).push(
                         MaterialPageRoute(
                             builder: (context) {
-                              return HomePage();
+                              return const HomePage();
                             }
                         ),
                       );
@@ -127,8 +127,8 @@ class _SignupPageState extends State<SignupPage> {
                 ),
                 child: Text(
                   message,
-                  style: TextStyle(
-                    color: themeColor.red,
+                  style: const TextStyle(
+                    color: Colors.red,
                   ),
                 ),
               ),
@@ -145,7 +145,7 @@ class _SignupPageState extends State<SignupPage> {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) {
-                          return SigninPage();
+                          return const SigninPage();
                         }
                       ),
                     );
