@@ -255,6 +255,5 @@ class _EditReportPageState extends State<EditReportPage> {
         ),
       ),
     );
-
   }
 }

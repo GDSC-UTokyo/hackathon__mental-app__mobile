@@ -1,8 +1,8 @@
+import 'package:app/screens/log.dart';
 import 'package:app/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:provider/provider.dart';
-import 'package:app/components/footer.dart';
 import 'dart:math';
 
 class HomePage extends StatefulWidget {
@@ -239,7 +239,33 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      bottomNavigationBar: const Footer(),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: 1,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.history_edu),
+            label: 'log',
+          ),
+        ],
+        selectedItemColor: themeColor.grey[0],
+        unselectedItemColor: themeColor.primary,
+        showUnselectedLabels: true,
+        onTap: (int value) {
+          if (value == 1) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) {
+                  return const LogPage();
+                }
+              )
+            );
+          }
+        },
+      ),
     );
   }
 }

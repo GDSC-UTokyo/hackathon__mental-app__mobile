@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:app/api/entity/report/report_entity.dart';
 import 'package:app/api/service/report_service.dart';
 import 'package:app/provider/reason.dart';
 import 'package:app/provider/report.dart';
@@ -10,12 +9,12 @@ import 'package:app/screens/edit_report.dart';
 import 'package:app/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:app/components/footer.dart';
 import 'package:intl/intl.dart';
 
 import '../api/entity/reason/reason_entity.dart';
 import '../api/entity/reportDetail/report_detail_entity.dart';
 import '../api/service/reason_service.dart';
+import 'home.dart';
 
 class LogPage extends StatefulWidget {
   const LogPage({super.key});
@@ -81,7 +80,7 @@ class _LogPageState extends State<LogPage> {
   @override
   Widget build(BuildContext context) {
     final themeColor = Provider.of<ThemeProvider>(context).theme.colorTheme;
-    initializeAsync();
+    // initializeAsync();
     List<Reason> reasonList = context.watch<ReasonsProvider>().reasons;
     List<Report> reports = context.watch<ReportsProvider>().reports;
 
@@ -252,7 +251,33 @@ class _LogPageState extends State<LogPage> {
         },
         child: const Icon(Icons.add),
       ),
-      bottomNavigationBar: const Footer(),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: 0,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.history_edu),
+            label: 'log',
+          ),
+        ],
+        selectedItemColor: themeColor.grey[0],
+        unselectedItemColor: themeColor.primary,
+        showUnselectedLabels: true,
+        onTap: (int value) {
+          if (value == 0) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) {
+                  return const HomePage();
+                }
+              )
+            );
+          }
+        },
+      ),
     );
   }
 }

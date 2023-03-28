@@ -1,5 +1,4 @@
 import 'package:app/screens/home.dart';
-import 'package:app/screens/log.dart';
 import 'package:app/screens/signup.dart';
 import 'package:app/theme/theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -98,7 +97,7 @@ class _SigninPageState extends State<SigninPage> {
                       await Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) {
-                            return const LogPage();
+                            return const HomePage();
                           }
                         ),
                       );
