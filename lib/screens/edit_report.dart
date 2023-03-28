@@ -29,7 +29,7 @@ class _EditReportPageState extends State<EditReportPage> {
   void initState() {
     super.initState();
 
-    final currentReport = context.read<CurrentReportProvider>().report;
+    var currentReport = context.read<CurrentReportProvider>().report;
     id = currentReport.id;
     mentalPoint = currentReport.point.toDouble();
     selectedIdList = currentReport.reasonIdList;

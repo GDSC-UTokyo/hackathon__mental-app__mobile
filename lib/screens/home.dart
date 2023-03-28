@@ -122,7 +122,7 @@ class _HomePageState extends State<HomePage> {
                   color: themeColor.background,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                constraints: const BoxConstraints(maxWidth: 290),
+                constraints: const BoxConstraints(maxWidth: 210),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -160,25 +160,6 @@ class _HomePageState extends State<HomePage> {
                       },
                       child: const Text(
                         'Month',
-                        style: TextStyle(
-                            color: Color(0xff5E5E5E),
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    TextButton(
-                      style: TextButton.styleFrom(
-                          backgroundColor: _period == "year"
-                              ? themeColor.paleBlue
-                              : themeColor.background,
-                          minimumSize: const Size(100, 50)),
-                      onPressed: () {
-                        setState(() {
-                          _period = 'year';
-                          _data = _generateData();
-                        });
-                      },
-                      child: const Text(
-                        'Year',
                         style: TextStyle(
                             color: Color(0xff5E5E5E),
                             fontWeight: FontWeight.bold),

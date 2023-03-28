@@ -52,7 +52,7 @@ class ReportService {
 
     String token = await getToken();
 
-    var finalUrl = '$BASE_URL$endUrl';
+    var finalUrl = '$BASE_URL$endUrl/graphs';
     var headers = {
       'Content-type' : 'application/json',
       'Authorization': 'Bearer $token'

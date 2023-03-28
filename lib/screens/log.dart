@@ -47,40 +47,38 @@ class _LogPageState extends State<LogPage> {
 
   Future<void> initializeAsync() async {
     final reportsResponse = await ReportService().fetchList("", "", 10);
-    final decodedReportsResponse = json.decode(reportsResponse.body) as List<dynamic>;
-    final reportList = decodedReportsResponse.map((dynamic itemJson) =>
-      ReportDetailEntity.fromJson(itemJson as Map<String, dynamic>)
-    ).toList();
-
+    List<Map<String, dynamic>> decodedReportsResponse = jsonDecode(reportsResponse.body).cast<Map<String, dynamic>>();
     if (!mounted) return;
-    for (int i = 0; i < reportList.length; i++) {
+    for (var jsonMap in decodedReportsResponse) {
       context.read<ReportsProvider>().create(Report(
-        reportList[i].mentalPointId,
-        reportList[i].createdDate,
-        reportList[i].point,
-        reportList[i].reasonIdList
+        jsonMap['mentalPointId'].toString(),
+        jsonMap['createDate'].toString(),
+        int.parse(jsonMap['point'].toString()),
+        List<String>.from(jsonMap['reasonIdList'])
       ));
     }
 
     final reasonsResponse = await ReasonService().fetch();
-    final decodedReasonsResponse = json.decode(reasonsResponse.body) as List<dynamic>;
-    final reasons = decodedReasonsResponse.map((dynamic itemJson) =>
-      ReasonEntity.fromJson(itemJson as Map<String, dynamic>)
-    ).toList();
-
+    List<Map<String, dynamic>> decodedReasonsResponse = jsonDecode(reasonsResponse.body).cast<Map<String, dynamic>>();
     if (!mounted) return;
-    for (int i = 0; i < reasons.length; i++) {
+    for (var jsonMap in decodedReasonsResponse) {
       context.read<ReasonsProvider>().create(Reason(
-        reasons[i].id,
-        reasons[i].reason
+        jsonMap['id'].toString(),
+        jsonMap['reason'].toString(),
       ));
     }
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    initializeAsync();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final themeColor = Provider.of<ThemeProvider>(context).theme.colorTheme;
-    // initializeAsync();
     List<Reason> reasonList = context.watch<ReasonsProvider>().reasons;
     List<Report> reports = context.watch<ReportsProvider>().reports;
 
