@@ -88,7 +88,6 @@ class _CreateReasonPageState extends State<CreateReasonPage> {
                       final data = ReasonEntity.fromJson(json.decode(response.body));
 
                       if (!mounted) return;
-
                       context.read<ReasonsProvider>().create(Reason(data.id, data.reason));
                       Navigator.of(context).push(
                         MaterialPageRoute(

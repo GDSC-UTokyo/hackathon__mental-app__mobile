@@ -1,3 +1,4 @@
+import 'package:app/api/service/reason_service.dart';
 import 'package:app/provider/currentReport.dart';
 import 'package:app/screens/create_reason.dart';
 import 'package:app/screens/create_report.dart';
@@ -88,8 +89,14 @@ class _ReasonPageState extends State<ReasonPage> {
                         IconButton(
                           icon: const Icon(Icons.delete),
                           color: Colors.red,
-                          onPressed: () => {
-                            context.read<ReasonsProvider>().delete(reasonList[index].id)
+                          onPressed: () async {
+                            try {
+                              await ReasonService().delete(reasonList[index].id);
+                              if (!mounted) return;
+                              context.read<ReasonsProvider>().delete(reasonList[index].id);
+                            } catch(e) {
+                              print("cannot delete reason");
+                            }
                           },
                         ),
                       ],

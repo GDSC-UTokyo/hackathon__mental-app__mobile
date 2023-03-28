@@ -24,10 +24,10 @@ class MyApp extends StatelessWidget {
               const MaterialPage(child: UnknownPage()), //FIXME:
           routes: {
             '/': (_) => const MaterialPage(child: InitialPage()),
-            '/home': (_) => const MaterialPage(child: HomePage()),
+            '/log': (_) => const MaterialPage(child: LogPage()),
             '/signin': (_) => const MaterialPage(child: SigninPage()),
             '/signup': (_) => const MaterialPage(child: SignupPage()),
-            '/log': (_) => const MaterialPage(child: LogPage()),
+            '/home': (_) => const MaterialPage(child: HomePage()),
             '/report/create': (_) => const MaterialPage(child: CreateReportPage()),
             '/report/edit': (_) => const MaterialPage(child: EditReportPage()),
             '/reason': (_) => const MaterialPage(child: ReasonPage()),

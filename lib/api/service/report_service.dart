@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/io_client.dart';
 
 class ReportService {
-  final String BASE_URL = "https://localhost:8080";
+  final String BASE_URL = "https://gdsc-utokyo-rxy2w4nxya-uc.a.run.app";
   final String endUrl = '/reports';
 
   Future<String> getToken() async {
@@ -19,6 +21,10 @@ class ReportService {
   }
 
   Future<http.Response> fetchDetail(String id) async {
+    HttpClient client = HttpClient();
+    client.badCertificateCallback = ((X509Certificate cert, String host, int port) => true);
+    final http = IOClient(client);
+
     String token = await getToken();
 
     var finalUrl = '$BASE_URL$endUrl/$id';
@@ -27,7 +33,7 @@ class ReportService {
       'Authorization': 'Bearer $token'
     };
 
-    final http.Response response = await http.get(
+    final response = await http.get(
       Uri.parse(finalUrl),
       headers: headers,
     );
@@ -40,6 +46,10 @@ class ReportService {
   }
 
   Future<http.Response> fetchList(String createdDate, String endDate, int count) async {
+    HttpClient client = HttpClient();
+    client.badCertificateCallback = ((X509Certificate cert, String host, int port) => true);
+    final http = IOClient(client);
+
     String token = await getToken();
 
     var finalUrl = '$BASE_URL$endUrl';
@@ -53,7 +63,7 @@ class ReportService {
       'count': count
     };
 
-    final http.Response response = await http.post(
+    final response = await http.post(
       Uri.parse(finalUrl),
       headers: headers,
       body: jsonEncode(data),
@@ -67,6 +77,10 @@ class ReportService {
   }
 
   Future<http.Response> create(String createdDate, int point, List<String> reasonIdList) async {
+    HttpClient client = HttpClient();
+    client.badCertificateCallback = ((X509Certificate cert, String host, int port) => true);
+    final http = IOClient(client);
+
     String token = await getToken();
 
     var finalUrl = '$BASE_URL$endUrl';
@@ -80,7 +94,7 @@ class ReportService {
       'reasonIdList': reasonIdList
     };
 
-    final http.Response response = await http.post(
+    final response = await http.post(
       Uri.parse(finalUrl),
       headers: headers,
       body: jsonEncode(data),
@@ -94,6 +108,10 @@ class ReportService {
   }
 
   Future<http.Response> update(String id, int point, List<String> reasonIdList) async {
+    HttpClient client = HttpClient();
+    client.badCertificateCallback = ((X509Certificate cert, String host, int port) => true);
+    final http = IOClient(client);
+
     String token = await getToken();
 
     var finalUrl = '$BASE_URL$endUrl/$id';
@@ -106,7 +124,7 @@ class ReportService {
       'reasonIdList': reasonIdList
     };
 
-    final http.Response response = await http.put(
+    final response = await http.put(
       Uri.parse(finalUrl),
       headers: headers,
       body: jsonEncode(data),

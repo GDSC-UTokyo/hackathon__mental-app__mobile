@@ -46,48 +46,42 @@ bool hasTodayReport(String date, List<Report> reports) {
 
 class _LogPageState extends State<LogPage> {
 
-  // @override
-  // void initState() async {
-  //   super.initState();
-  //
-  //   final reportsResponse = await ReportService().fetchList("", "", 10);
-  //   final decodedReportsResponse = json.decode(reportsResponse.body) as List<dynamic>;
-  //   final reportList = decodedReportsResponse.map((dynamic itemJson) =>
-  //     ReportDetailEntity.fromJson(itemJson as Map<String, dynamic>)
-  //   ).toList();
-  //   if (!mounted) return;
-  //   for (int i = 0; i < reportList.length; i++) {
-  //     context.read<ReportsProvider>().create(Report(
-  //         reportList[i].mentalPointId,
-  //         reportList[i].createdDate,
-  //         reportList[i].point,
-  //         reportList[i].reasonIdList
-  //     ));
-  //   }
-  //
-  //   final reasonsResponse = await ReasonService().fetch();
-  //   final decodedReasonsResponse = json.decode(reasonsResponse.body) as List<dynamic>;
-  //   final reasons = decodedReasonsResponse.map((dynamic itemJson) =>
-  //       ReasonEntity.fromJson(itemJson as Map<String, dynamic>)
-  //   ).toList();
-  //   if (!mounted) return;
-  //   for (int i = 0; i < reasons.length; i++) {
-  //     context.read<ReasonsProvider>().create(Reason(
-  //         reasons[i].id,
-  //         reasons[i].reason
-  //     ));
-  //   }
-  // }
+  Future<void> initializeAsync() async {
+    final reportsResponse = await ReportService().fetchList("", "", 10);
+    final decodedReportsResponse = json.decode(reportsResponse.body) as List<dynamic>;
+    final reportList = decodedReportsResponse.map((dynamic itemJson) =>
+      ReportDetailEntity.fromJson(itemJson as Map<String, dynamic>)
+    ).toList();
 
-  @override
-  void initState() {
-    super.initState();
+    if (!mounted) return;
+    for (int i = 0; i < reportList.length; i++) {
+      context.read<ReportsProvider>().create(Report(
+        reportList[i].mentalPointId,
+        reportList[i].createdDate,
+        reportList[i].point,
+        reportList[i].reasonIdList
+      ));
+    }
 
+    final reasonsResponse = await ReasonService().fetch();
+    final decodedReasonsResponse = json.decode(reasonsResponse.body) as List<dynamic>;
+    final reasons = decodedReasonsResponse.map((dynamic itemJson) =>
+      ReasonEntity.fromJson(itemJson as Map<String, dynamic>)
+    ).toList();
+
+    if (!mounted) return;
+    for (int i = 0; i < reasons.length; i++) {
+      context.read<ReasonsProvider>().create(Reason(
+        reasons[i].id,
+        reasons[i].reason
+      ));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final themeColor = Provider.of<ThemeProvider>(context).theme.colorTheme;
+    initializeAsync();
     List<Reason> reasonList = context.watch<ReasonsProvider>().reasons;
     List<Report> reports = context.watch<ReportsProvider>().reports;
 
@@ -245,8 +239,7 @@ class _LogPageState extends State<LogPage> {
           DateTime now = DateTime.now();
           DateFormat outputFormat = DateFormat('yyyy-MM-dd');
           String date = outputFormat.format(now);
-          // if (hasTodayReport(date, reports)) {
-          if (false) {
+          if (hasTodayReport(date, reports)) {
             return;
           } else {
             context.read<CurrentReportProvider>().updateMode(true);

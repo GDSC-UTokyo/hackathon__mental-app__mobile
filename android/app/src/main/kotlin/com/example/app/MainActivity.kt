@@ -1,4 +1,4 @@
-package com.u-tokyo.mental-app
+package com.utokyo.mental_app1
 
 import io.flutter.embedding.android.FlutterActivity
 

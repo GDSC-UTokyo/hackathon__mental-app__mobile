@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/io_client.dart';
 
 class ReasonService {
-  final String BASE_URL = "https://localhost:8080";
+  final String BASE_URL = "https://gdsc-utokyo-rxy2w4nxya-uc.a.run.app";
   final String endUrl = '/reasons';
 
   Future<String> getToken() async {
@@ -19,6 +21,10 @@ class ReasonService {
   }
 
   Future<http.Response> fetch() async {
+    HttpClient client = HttpClient();
+    client.badCertificateCallback = ((X509Certificate cert, String host, int port) => true);
+    final http = IOClient(client);
+
     String token = await getToken();
 
     var finalUrl = '$BASE_URL$endUrl';
@@ -27,7 +33,7 @@ class ReasonService {
       'Authorization': 'Bearer $token'
     };
 
-    final http.Response response = await http.get(
+    final response = await http.get(
       Uri.parse(finalUrl),
       headers: headers,
     );
@@ -40,6 +46,10 @@ class ReasonService {
   }
 
   Future<http.Response> create(String reason) async {
+    HttpClient client = HttpClient();
+    client.badCertificateCallback = ((X509Certificate cert, String host, int port) => true);
+    final http = IOClient(client);
+
     String token = await getToken();
 
     var finalUrl = '$BASE_URL$endUrl';
@@ -49,7 +59,7 @@ class ReasonService {
     };
     var data = {'reason': reason};
 
-    final http.Response response = await http.post(
+    final response = await http.post(
       Uri.parse(finalUrl),
       headers: headers,
       body: jsonEncode(data),
@@ -63,6 +73,10 @@ class ReasonService {
   }
 
   Future<http.Response> update(String id, String reason) async {
+    HttpClient client = HttpClient();
+    client.badCertificateCallback = ((X509Certificate cert, String host, int port) => true);
+    final http = IOClient(client);
+
     String token = await getToken();
 
     var finalUrl = '$BASE_URL$endUrl/$id';
@@ -72,7 +86,7 @@ class ReasonService {
     };
     var data = {'reason': reason};
 
-    final http.Response response = await http.put(
+    final response = await http.put(
       Uri.parse(finalUrl),
       headers: headers,
       body: jsonEncode(data),
@@ -86,6 +100,10 @@ class ReasonService {
   }
 
   Future<http.Response> delete(String id) async {
+    HttpClient client = HttpClient();
+    client.badCertificateCallback = ((X509Certificate cert, String host, int port) => true);
+    final http = IOClient(client);
+
     String token = await getToken();
 
     var finalUrl = '$BASE_URL$endUrl/$id';
@@ -94,7 +112,7 @@ class ReasonService {
       'Authorization': 'Bearer $token'
     };
 
-    final http.Response response = await http.get(
+    final response = await http.delete(
       Uri.parse(finalUrl),
       headers: headers,
     );
