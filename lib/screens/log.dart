@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:app/api/entity/report/report_entity.dart';
+import 'package:app/api/service/report_service.dart';
 import 'package:app/provider/reason.dart';
 import 'package:app/provider/report.dart';
 import 'package:app/provider/currentReport.dart';
@@ -8,6 +12,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:app/components/footer.dart';
 import 'package:intl/intl.dart';
+
+import '../api/entity/reason/reason_entity.dart';
+import '../api/entity/reportDetail/report_detail_entity.dart';
+import '../api/service/reason_service.dart';
 
 class LogPage extends StatefulWidget {
   const LogPage({super.key});
@@ -37,6 +45,39 @@ bool hasTodayReport(String date, List<Report> reports) {
 }
 
 class _LogPageState extends State<LogPage> {
+
+  // @override
+  // void initState() async {
+  //   super.initState();
+  //
+  //   final reportsResponse = await ReportService().fetchList("", "", 10);
+  //   final decodedReportsResponse = json.decode(reportsResponse.body) as List<dynamic>;
+  //   final reportList = decodedReportsResponse.map((dynamic itemJson) =>
+  //     ReportDetailEntity.fromJson(itemJson as Map<String, dynamic>)
+  //   ).toList();
+  //   if (!mounted) return;
+  //   for (int i = 0; i < reportList.length; i++) {
+  //     context.read<ReportsProvider>().create(Report(
+  //         reportList[i].mentalPointId,
+  //         reportList[i].createdDate,
+  //         reportList[i].point,
+  //         reportList[i].reasonIdList
+  //     ));
+  //   }
+  //
+  //   final reasonsResponse = await ReasonService().fetch();
+  //   final decodedReasonsResponse = json.decode(reasonsResponse.body) as List<dynamic>;
+  //   final reasons = decodedReasonsResponse.map((dynamic itemJson) =>
+  //       ReasonEntity.fromJson(itemJson as Map<String, dynamic>)
+  //   ).toList();
+  //   if (!mounted) return;
+  //   for (int i = 0; i < reasons.length; i++) {
+  //     context.read<ReasonsProvider>().create(Reason(
+  //         reasons[i].id,
+  //         reasons[i].reason
+  //     ));
+  //   }
+  // }
 
   @override
   void initState() {

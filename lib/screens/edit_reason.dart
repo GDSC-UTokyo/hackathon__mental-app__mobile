@@ -1,8 +1,13 @@
+import 'dart:convert';
+
 import 'package:app/provider/reason.dart';
 import 'package:app/screens/reason.dart';
 import 'package:flutter/material.dart';
 import 'package:app/theme/theme.dart';
 import 'package:provider/provider.dart';
+
+import '../api/entity/reason/reason_entity.dart';
+import '../api/service/reason_service.dart';
 
 class EditReasonPage extends StatefulWidget {
   const EditReasonPage({super.key});
@@ -80,20 +85,33 @@ class _EditReasonPageState extends State<EditReasonPage> {
                 bottom: 15.0,
               ),
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (currentReason == '') {
                     setState(() {
                       message = 'reason column is empty';
                     });
                   } else {
-                    context.read<ReasonsProvider>().edit(Reason(id, currentReason));
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return const ReasonPage();
-                        }
-                      ),
-                    );
+                    try {
+                      final response = await ReasonService().update(id, currentReason);
+
+                      final data = ReasonEntity.fromJson(json.decode(response.body));
+
+                      if (!mounted) return;
+
+                      context.read<ReasonsProvider>().edit(Reason(data.id, data.reason));
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return const ReasonPage();
+                          }
+                        ),
+                      );
+                    } catch(e) {
+                      print(e);
+                      setState(() {
+                        message = 'failed in updating reasons';
+                      });
+                    }
                   }
                 },
                 style: ElevatedButton.styleFrom(

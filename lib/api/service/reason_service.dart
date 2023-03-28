@@ -28,7 +28,7 @@ class ReasonService {
     };
 
     final http.Response response = await http.get(
-      finalUrl as Uri,
+      Uri.parse(finalUrl),
       headers: headers,
     );
 
@@ -50,7 +50,7 @@ class ReasonService {
     var data = {'reason': reason};
 
     final http.Response response = await http.post(
-      finalUrl as Uri,
+      Uri.parse(finalUrl),
       headers: headers,
       body: jsonEncode(data),
     );
@@ -73,7 +73,7 @@ class ReasonService {
     var data = {'reason': reason};
 
     final http.Response response = await http.put(
-      finalUrl as Uri,
+      Uri.parse(finalUrl),
       headers: headers,
       body: jsonEncode(data),
     );
@@ -95,7 +95,7 @@ class ReasonService {
     };
 
     final http.Response response = await http.get(
-      finalUrl as Uri,
+      Uri.parse(finalUrl),
       headers: headers,
     );
 

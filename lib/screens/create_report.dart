@@ -1,5 +1,6 @@
-import 'dart:math';
+import 'dart:convert';
 
+import 'package:app/api/entity/report/report_entity.dart';
 import 'package:app/provider/reason.dart';
 import 'package:app/provider/report.dart';
 import 'package:app/provider/currentReport.dart';
@@ -9,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:app/theme/theme.dart';
 import 'package:intl/intl.dart';
+
+import '../api/service/report_service.dart';
 
 class CreateReportPage extends StatefulWidget {
   const CreateReportPage({super.key});
@@ -115,9 +118,9 @@ class _CreateReportPageState extends State<CreateReportPage> {
                   onPressed: () => {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                          builder: (context) {
-                            return const ReasonPage();
-                          }
+                        builder: (context) {
+                          return const ReasonPage();
+                        }
                       ),
                     )
                   },
@@ -194,20 +197,31 @@ class _CreateReportPageState extends State<CreateReportPage> {
                   top: 0,
                 ),
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (selectedIdList.isNotEmpty) {
-                      final id = Random().nextInt(10000000).toString();
-                      context.read<CurrentReportProvider>().updateReport(
-                          Report(id, date, mentalPoint.toInt(), selectedIdList)
-                      );
-                      context.read<ReportsProvider>().create(
-                          Report(id, date, mentalPoint.toInt(), selectedIdList)
-                      );
-                      Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) {
-                            return const LogPage();
-                          })
-                      );
+                      try {
+                        final response = await ReportService().create(date, mentalPoint.toInt(), selectedIdList);
+
+                        final data = ReportEntity.fromJson(json.decode(response.body));
+
+                        if (!mounted) return;
+                        context.read<CurrentReportProvider>().updateReport(
+                            Report(data.mentalPointId, date, data.point, data.reasonIdList)
+                        );
+                        context.read<ReportsProvider>().create(
+                            Report(data.mentalPointId, date, data.point, data.reasonIdList)
+                        );
+                        Navigator.of(context).push(
+                            MaterialPageRoute(builder: (context) {
+                              return const LogPage();
+                            })
+                        );
+                      } catch(e) {
+                        print(e);
+                        setState(() {
+                          message = 'failed in creating report';
+                        });
+                      }
                     } else {
                       setState(() {
                         message = "Select at least one reason";

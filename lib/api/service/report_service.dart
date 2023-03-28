@@ -28,7 +28,7 @@ class ReportService {
     };
 
     final http.Response response = await http.get(
-      finalUrl as Uri,
+      Uri.parse(finalUrl),
       headers: headers,
     );
 
@@ -54,7 +54,7 @@ class ReportService {
     };
 
     final http.Response response = await http.post(
-      finalUrl as Uri,
+      Uri.parse(finalUrl),
       headers: headers,
       body: jsonEncode(data),
     );
@@ -81,7 +81,7 @@ class ReportService {
     };
 
     final http.Response response = await http.post(
-      finalUrl as Uri,
+      Uri.parse(finalUrl),
       headers: headers,
       body: jsonEncode(data),
     );
@@ -107,7 +107,7 @@ class ReportService {
     };
 
     final http.Response response = await http.put(
-      finalUrl as Uri,
+      Uri.parse(finalUrl),
       headers: headers,
       body: jsonEncode(data),
     );

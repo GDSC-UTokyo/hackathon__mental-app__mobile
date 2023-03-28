@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:app/provider/reason.dart';
 import 'package:app/provider/report.dart';
 import 'package:app/provider/currentReport.dart';
@@ -6,6 +8,9 @@ import 'package:app/screens/reason.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:app/theme/theme.dart';
+
+import '../api/entity/report/report_entity.dart';
+import '../api/service/report_service.dart';
 
 class EditReportPage extends StatefulWidget {
   const EditReportPage({super.key});
@@ -200,19 +205,31 @@ class _EditReportPageState extends State<EditReportPage> {
                     top: 0,
                   ),
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (selectedIdList.isNotEmpty) {
-                        context.read<CurrentReportProvider>().updateReport(
-                            Report(id, date, mentalPoint.toInt(), selectedIdList)
-                        );
-                        context.read<ReportsProvider>().edit(
-                            Report(id, date, mentalPoint.toInt(), selectedIdList)
-                        );
-                        Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context) {
-                              return const LogPage();
-                            })
-                        );
+                        try {
+                          final response = await ReportService().update(id, mentalPoint.toInt(), selectedIdList);
+
+                          final data = ReportEntity.fromJson(json.decode(response.body));
+
+                          if (!mounted) return;
+                          context.read<CurrentReportProvider>().updateReport(
+                              Report(data.mentalPointId, date, data.point, data.reasonIdList)
+                          );
+                          context.read<ReportsProvider>().edit(
+                              Report(data.mentalPointId, date, data.point, data.reasonIdList)
+                          );
+                          Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) {
+                                return const LogPage();
+                              })
+                          );
+                        } catch(e) {
+                          print(e);
+                          setState(() {
+                            message = 'failed in updating report';
+                          });
+                        }
                       } else {
                         setState(() {
                           message = "Select at least one reason";
