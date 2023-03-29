@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:app/screens/log.dart';
 import 'package:app/theme/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:provider/provider.dart';
-import 'dart:math';
+
+import '../api/service/report_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,38 +23,42 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _data = _generateData();
+
+    _fetchData(_data);
   }
 
-  List<Data> _generateData() {
-    final now = DateTime.now();
+  Future<void> _fetchData(_data) async {
     List<Data> data = [];
+    DateTime now = DateTime.now();
+    DateFormat outputFormat = DateFormat('yyyy-MM-dd');
+    String endDate = outputFormat.format(now);
 
     switch (_period) {
       case 'week':
-        for (int i = 6; i >= 0; i--) {
-          final date = now.subtract(Duration(days: i));
-          final value = Random().nextInt(100).toDouble();
-          data.add(Data(date, value));
+        String startDay = outputFormat.format(now.subtract(const Duration(days:7)));
+        final reportsResponse = await ReportService().fetchList(startDay, endDate, 0);
+        List<Map<String, dynamic>> decodedReportsResponse = jsonDecode(reportsResponse.body).cast<Map<String, dynamic>>();
+        for (var jsonMap in decodedReportsResponse) {
+          data.add(Data(
+            jsonMap['createDate'].toString().substring(5, 9),
+            int.parse(jsonMap['point'].toString()).toDouble()
+          ));
         }
         break;
       case 'month':
-        for (int i = 29; i >= 0; i--) {
-          final date = now.subtract(Duration(days: i));
-          final value = Random().nextInt(100).toDouble();
-          data.add(Data(date, value));
-        }
-        break;
-      case 'year':
-        for (int i = 365; i >= 0; i--) {
-          final date = now.subtract(Duration(days: i));
-          final value = Random().nextInt(100).toDouble();
-          data.add(Data(date, value));
+        String startDay = outputFormat.format(now.subtract(const Duration(days:30)));
+        final reportsResponse = await ReportService().fetchList(startDay, endDate, 0);
+        List<Map<String, dynamic>> decodedReportsResponse = jsonDecode(reportsResponse.body).cast<Map<String, dynamic>>();
+        for (var jsonMap in decodedReportsResponse) {
+          data.add(Data(
+              jsonMap['createDate'].toString().substring(5, 9),
+              int.parse(jsonMap['point'].toString()).toDouble()
+          ));
         }
         break;
     }
 
-    return data;
+    _data = data;
   }
 
   @override
@@ -136,7 +144,7 @@ class _HomePageState extends State<HomePage> {
                       onPressed: () {
                         setState(() {
                           _period = 'week';
-                          _data = _generateData();
+                          _fetchData(_data);
                         });
                       },
                       child: const Text(
@@ -155,7 +163,7 @@ class _HomePageState extends State<HomePage> {
                       onPressed: () {
                         setState(() {
                           _period = 'month';
-                          _data = _generateData();
+                          _fetchData(_data);
                         });
                       },
                       child: const Text(
@@ -207,8 +215,8 @@ class _HomePageState extends State<HomePage> {
                     majorGridLines:
                         const MajorGridLines(color: Colors.transparent),
                     majorTickLines: MajorTickLines(color: themeColor.grey[4])),
-                series: <ChartSeries<Data, DateTime>>[
-                  LineSeries<Data, DateTime>(
+                series: <ChartSeries<Data, String>>[
+                  LineSeries<Data, String>(
                     color: themeColor.secondary,
                     dataSource: _data,
                     xValueMapper: (Data data, _) => data.date,
@@ -253,7 +261,7 @@ class _HomePageState extends State<HomePage> {
 
 // グラフに表示するデータのクラス
 class Data {
-  final DateTime date;
+  final String date;
   final double value;
 
   Data(this.date, this.value);

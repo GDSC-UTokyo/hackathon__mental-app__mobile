@@ -45,7 +45,7 @@ class ReportService {
     }
   }
 
-  Future<http.Response> fetchList(String createdDate, String endDate, int count) async {
+  Future<http.Response> fetchList(String startDate, String endDate, int count) async {
     HttpClient client = HttpClient();
     client.badCertificateCallback = ((X509Certificate cert, String host, int port) => true);
     final http = IOClient(client);
@@ -58,7 +58,7 @@ class ReportService {
       'Authorization': 'Bearer $token'
     };
     var data = {
-      'createdDate': createdDate,
+      'startDate': startDate,
       'endDate': endDate,
       'count': count
     };

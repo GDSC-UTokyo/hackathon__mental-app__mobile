@@ -11,8 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
-import '../api/entity/reason/reason_entity.dart';
-import '../api/entity/reportDetail/report_detail_entity.dart';
 import '../api/service/reason_service.dart';
 import 'home.dart';
 
