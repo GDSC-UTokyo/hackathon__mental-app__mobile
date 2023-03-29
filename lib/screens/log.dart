@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:app/api/service/report_service.dart';
 import 'package:app/provider/reason.dart';
 import 'package:app/provider/report.dart';
 import 'package:app/provider/currentReport.dart';
@@ -6,8 +9,10 @@ import 'package:app/screens/edit_report.dart';
 import 'package:app/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:app/components/footer.dart';
 import 'package:intl/intl.dart';
+
+import '../api/service/reason_service.dart';
+import 'home.dart';
 
 class LogPage extends StatefulWidget {
   const LogPage({super.key});
@@ -38,10 +43,36 @@ bool hasTodayReport(String date, List<Report> reports) {
 
 class _LogPageState extends State<LogPage> {
 
+  Future<void> initializeAsync() async {
+    final reportsResponse = await ReportService().fetchList("", "", 10);
+    List<Map<String, dynamic>> decodedReportsResponse = jsonDecode(reportsResponse.body).cast<Map<String, dynamic>>();
+    if (!mounted) return;
+    for (var jsonMap in decodedReportsResponse) {
+      context.read<ReportsProvider>().create(Report(
+        jsonMap['mentalPointId'].toString(),
+        jsonMap['createDate'].toString(),
+        int.parse(jsonMap['point'].toString()),
+        List<String>.from(jsonMap['reasonIdList'])
+      ));
+    }
+    context.read<ReportsProvider>().sortByDate();
+
+    final reasonsResponse = await ReasonService().fetch();
+    List<Map<String, dynamic>> decodedReasonsResponse = jsonDecode(reasonsResponse.body).cast<Map<String, dynamic>>();
+    if (!mounted) return;
+    for (var jsonMap in decodedReasonsResponse) {
+      context.read<ReasonsProvider>().create(Reason(
+        jsonMap['id'].toString(),
+        jsonMap['reason'].toString(),
+      ));
+    }
+  }
+
   @override
   void initState() {
     super.initState();
 
+    initializeAsync();
   }
 
   @override
@@ -204,8 +235,7 @@ class _LogPageState extends State<LogPage> {
           DateTime now = DateTime.now();
           DateFormat outputFormat = DateFormat('yyyy-MM-dd');
           String date = outputFormat.format(now);
-          // if (hasTodayReport(date, reports)) {
-          if (false) {
+          if (hasTodayReport(date, reports)) {
             return;
           } else {
             context.read<CurrentReportProvider>().updateMode(true);
@@ -218,7 +248,33 @@ class _LogPageState extends State<LogPage> {
         },
         child: const Icon(Icons.add),
       ),
-      bottomNavigationBar: const Footer(),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: 0,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.history_edu),
+            label: 'log',
+          ),
+        ],
+        selectedItemColor: themeColor.grey[0],
+        unselectedItemColor: themeColor.primary,
+        showUnselectedLabels: true,
+        onTap: (int value) {
+          if (value == 0) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) {
+                  return const HomePage();
+                }
+              )
+            );
+          }
+        },
+      ),
     );
   }
 }

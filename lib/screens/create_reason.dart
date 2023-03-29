@@ -1,5 +1,8 @@
+import 'dart:convert';
 import 'dart:math';
 
+import 'package:app/api/entity/reason/reason_entity.dart';
+import 'package:app/api/service/reason_service.dart';
 import 'package:app/provider/reason.dart';
 import 'package:app/screens/reason.dart';
 import 'package:flutter/material.dart';
@@ -73,21 +76,33 @@ class _CreateReasonPageState extends State<CreateReasonPage> {
                 bottom: 15.0,
               ),
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (newReason == '') {
                     setState(() {
                       message = 'reason column is empty';
                     });
                   } else {
-                    final id = Random().nextInt(10000000).toString();
-                    context.read<ReasonsProvider>().create(Reason(id, newReason));
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return const ReasonPage();
-                        }
-                      ),
-                    );
+                    try {
+                      final response = await ReasonService().create(newReason);
+
+                      final data = ReasonEntity.fromJson(json.decode(response.body));
+
+                      if (!mounted) return;
+                      context.read<ReasonsProvider>().create(Reason(data.id, data.reason));
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return const ReasonPage();
+                          }
+                        ),
+                      );
+                    } catch(e) {
+                      print(e);
+                      setState(() {
+                        message = 'failed in creating reasons';
+                      });
+
+                    }
                   }
                 },
                 style: ElevatedButton.styleFrom(

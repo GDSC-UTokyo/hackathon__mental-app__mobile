@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>765823866967-4opttf64mok41tt22rttne4787bl86ip.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.765823866967-4opttf64mok41tt22rttne4787bl86ip</string>
+	<key>API_KEY</key>
+	<string>AIzaSyB6T6wA411pgJ1sizlchZWkiYSiqeMcpCU</string>
+	<key>GCM_SENDER_ID</key>
+	<string>765823866967</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.u-tokyo.mental-app</string>
+	<key>PROJECT_ID</key>
+	<string>solution-chalenge-380401</string>
+	<key>STORAGE_BUCKET</key>
+	<string>solution-chalenge-380401.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:765823866967:ios:cb14ff81aba02a9856eb12</string>
+</dict>
+</plist>

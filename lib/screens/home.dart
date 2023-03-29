@@ -1,9 +1,13 @@
+import 'dart:convert';
+
+import 'package:app/screens/log.dart';
 import 'package:app/theme/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:provider/provider.dart';
-import 'package:app/components/footer.dart';
-import 'dart:math';
+
+import '../api/service/report_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,33 +23,44 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _data = _generateData();
+
   }
 
-  List<Data> _generateData() {
-    final now = DateTime.now();
+  double calculateAveragePoint(List<Data> dataList) {
+    int totalPoints = 0;
+    for (var data in dataList) {
+      totalPoints = totalPoints + data.value.toInt();
+    }
+    return totalPoints / dataList.length;
+  }
+
+  Future<List<Data>> _fetchData() async {
     List<Data> data = [];
+    DateTime now = DateTime.now();
+    DateFormat outputFormat = DateFormat('yyyy-MM-dd');
+    String endDate = outputFormat.format(now);
 
     switch (_period) {
       case 'week':
-        for (int i = 6; i >= 0; i--) {
-          final date = now.subtract(Duration(days: i));
-          final value = Random().nextInt(100).toDouble();
-          data.add(Data(date, value));
+        String startDay = outputFormat.format(now.subtract(const Duration(days:7)));
+        final reportsResponse = await ReportService().fetchList(startDay, endDate, 0);
+        List<Map<String, dynamic>> decodedReportsResponse = jsonDecode(reportsResponse.body).cast<Map<String, dynamic>>();
+        for (var jsonMap in decodedReportsResponse) {
+          data.add(Data(
+            DateTime.parse(jsonMap['createDate'].toString()),
+            int.parse(jsonMap['point'].toString()).toDouble()
+          ));
         }
         break;
       case 'month':
-        for (int i = 29; i >= 0; i--) {
-          final date = now.subtract(Duration(days: i));
-          final value = Random().nextInt(100).toDouble();
-          data.add(Data(date, value));
-        }
-        break;
-      case 'year':
-        for (int i = 365; i >= 0; i--) {
-          final date = now.subtract(Duration(days: i));
-          final value = Random().nextInt(100).toDouble();
-          data.add(Data(date, value));
+        String startDay = outputFormat.format(now.subtract(const Duration(days:30)));
+        final reportsResponse = await ReportService().fetchList(startDay, endDate, 0);
+        List<Map<String, dynamic>> decodedReportsResponse = jsonDecode(reportsResponse.body).cast<Map<String, dynamic>>();
+        for (var jsonMap in decodedReportsResponse) {
+          data.add(Data(
+              DateTime.parse(jsonMap['createDate'].toString()),
+              int.parse(jsonMap['point'].toString()).toDouble()
+          ));
         }
         break;
     }
@@ -73,173 +88,194 @@ class _HomePageState extends State<HomePage> {
           borderRadius: BorderRadius.circular(16),
           color: Colors.white,
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Padding(
-              padding: EdgeInsets.all(20),
-              child: Text(
-                'Mental Point',
-                style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xff5E5E5E)),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 20, bottom: 20),
-              child: Row(
+        child: FutureBuilder(
+          future: _fetchData(),
+          builder: (BuildContext context, AsyncSnapshot<List<Data>> snapshot) {
+            if (snapshot.hasData) {
+              return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text(
-                    'Avg',
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xff5E5E5E)),
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Text(
+                      'Mental Point',
+                      style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xff5E5E5E)),
+                    ),
                   ),
-                  Spacer(
-                    flex: 1,
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, bottom: 20),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Avg',
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xff5E5E5E)),
+                        ),
+                        const Spacer(
+                          flex: 1,
+                        ),
+                        Text(
+                          calculateAveragePoint(snapshot.data!).toStringAsFixed(1),
+                          style: const TextStyle(
+                              fontSize: 40,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xff5E5E5E)),
+                        ),
+                        const Spacer(
+                          flex: 7,
+                        ),
+                      ],
+                    ),
                   ),
-                  Text(
-                    '57',
-                    style: TextStyle(
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xff5E5E5E)),
-                  ),
-                  Spacer(
-                    flex: 7,
-                  ),
-                ],
-              ),
-            ),
-            Align(
-              child: Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  color: themeColor.background,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                constraints: const BoxConstraints(maxWidth: 290),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TextButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: _period == "week"
-                            ? themeColor.paleBlue
-                            : themeColor.background,
-                        minimumSize: const Size(100, 50),
+                  Align(
+                    child: Container(
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: themeColor.background,
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      onPressed: () {
-                        setState(() {
-                          _period = 'week';
-                          _data = _generateData();
-                        });
-                      },
-                      child: const Text(
-                        'Week',
-                        style: TextStyle(
-                            color: Color(0xff5E5E5E),
-                            fontWeight: FontWeight.bold),
+                      constraints: const BoxConstraints(maxWidth: 210),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextButton(
+                            style: TextButton.styleFrom(
+                              backgroundColor: _period == "week"
+                                  ? themeColor.paleBlue
+                                  : themeColor.background,
+                              minimumSize: const Size(100, 50),
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _period = 'week';
+                                _data = snapshot.data!;
+                              });
+                            },
+                            child: const Text(
+                              'Week',
+                              style: TextStyle(
+                                  color: Color(0xff5E5E5E),
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          TextButton(
+                            style: TextButton.styleFrom(
+                                backgroundColor: _period == "month"
+                                    ? themeColor.paleBlue
+                                    : themeColor.background,
+                                minimumSize: const Size(100, 50)),
+                            onPressed: () {
+                              setState(() {
+                                _period = 'month';
+                                _data = snapshot.data!;
+                              });
+                            },
+                            child: const Text(
+                              'Month',
+                              style: TextStyle(
+                                  color: Color(0xff5E5E5E),
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    TextButton(
-                      style: TextButton.styleFrom(
-                          backgroundColor: _period == "month"
-                              ? themeColor.paleBlue
-                              : themeColor.background,
-                          minimumSize: const Size(100, 50)),
-                      onPressed: () {
-                        setState(() {
-                          _period = 'month';
-                          _data = _generateData();
-                        });
-                      },
-                      child: const Text(
-                        'Month',
-                        style: TextStyle(
-                            color: Color(0xff5E5E5E),
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    TextButton(
-                      style: TextButton.styleFrom(
-                          backgroundColor: _period == "year"
-                              ? themeColor.paleBlue
-                              : themeColor.background,
-                          minimumSize: const Size(100, 50)),
-                      onPressed: () {
-                        setState(() {
-                          _period = 'year';
-                          _data = _generateData();
-                        });
-                      },
-                      child: const Text(
-                        'Year',
-                        style: TextStyle(
-                            color: Color(0xff5E5E5E),
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 40),
-              child: SfCartesianChart(
-                backgroundColor: Colors.white,
-                primaryXAxis: DateTimeAxis(
-                  labelStyle: TextStyle(
-                      color: themeColor.grey[4], fontWeight: FontWeight.bold),
-                  axisLine: AxisLine(color: themeColor.grey[4]),
-                  plotBands: <PlotBand>[
-                    PlotBand(
-                      isVisible: true,
-                      start: _data[0].date,
-                      end: _data[0].date,
-                      color: Colors.blue,
-                    )
-                  ],
-                  majorGridLines:
-                      const MajorGridLines(color: Colors.transparent),
-                  majorTickLines: MajorTickLines(color: themeColor.grey[4]),
-                ),
-                primaryYAxis: NumericAxis(
-                    axisLine: AxisLine(color: themeColor.grey[4], width: 1),
-                    minimum: yAxisMin,
-                    maximum: yAxisMax,
-                    labelStyle: TextStyle(
-                        color: themeColor.grey[4], fontWeight: FontWeight.bold),
-                    plotBands: <PlotBand>[
-                      PlotBand(
-                        start: 20,
-                        end: 40,
-                        color: const Color(0x00FAF7F0),
-                      ),
-                      PlotBand(
-                          start: 60, end: 80, color: const Color(0x00FAF7F0))
-                    ],
-                    majorGridLines:
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 40),
+                    child: SfCartesianChart(
+                      backgroundColor: Colors.white,
+                      primaryXAxis: DateTimeAxis(
+                        labelStyle: TextStyle(
+                            color: themeColor.grey[4], fontWeight: FontWeight.bold),
+                        axisLine: AxisLine(color: themeColor.grey[4]),
+                        plotBands: <PlotBand>[
+                          PlotBand(
+                            isVisible: true,
+                            start: snapshot.data![0].date,
+                            end: snapshot.data![0].date,
+                            color: Colors.blue,
+                          )
+                        ],
+                        majorGridLines:
                         const MajorGridLines(color: Colors.transparent),
-                    majorTickLines: MajorTickLines(color: themeColor.grey[4])),
-                series: <ChartSeries<Data, DateTime>>[
-                  LineSeries<Data, DateTime>(
-                    color: themeColor.secondary,
-                    dataSource: _data,
-                    xValueMapper: (Data data, _) => data.date,
-                    yValueMapper: (Data data, _) => data.value,
+                        majorTickLines: MajorTickLines(color: themeColor.grey[4]),
+                      ),
+                      primaryYAxis: NumericAxis(
+                          axisLine: AxisLine(color: themeColor.grey[4], width: 1),
+                          minimum: yAxisMin,
+                          maximum: yAxisMax,
+                          labelStyle: TextStyle(
+                              color: themeColor.grey[4], fontWeight: FontWeight.bold),
+                          plotBands: <PlotBand>[
+                            PlotBand(
+                              start: 20,
+                              end: 40,
+                              color: const Color(0x00FAF7F0),
+                            ),
+                            PlotBand(
+                                start: 60, end: 80, color: const Color(0x00FAF7F0))
+                          ],
+                          majorGridLines:
+                          const MajorGridLines(color: Colors.transparent),
+                          majorTickLines: MajorTickLines(color: themeColor.grey[4])),
+                      series: <ChartSeries<Data, DateTime>>[
+                        LineSeries<Data, DateTime>(
+                          color: themeColor.secondary,
+                          dataSource: snapshot.data!,
+                          xValueMapper: (Data data, _) => data.date,
+                          yValueMapper: (Data data, _) => data.value,
+                        ),
+                      ],
+                    ),
                   ),
                 ],
-              ),
-            ),
-          ],
+              );
+            } else {
+              return const Center(
+                child: Text(
+                  "no reports",
+                  style: TextStyle(fontSize: 32, color: Colors.grey),
+                ),
+              );
+            }
+          },
         ),
       ),
-      bottomNavigationBar: const Footer(),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: 1,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.history_edu),
+            label: 'log',
+          ),
+        ],
+        selectedItemColor: themeColor.grey[0],
+        unselectedItemColor: themeColor.primary,
+        showUnselectedLabels: true,
+        onTap: (int value) {
+          if (value == 1) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) {
+                  return const LogPage();
+                }
+              )
+            );
+          }
+        },
+      ),
     );
   }
 }

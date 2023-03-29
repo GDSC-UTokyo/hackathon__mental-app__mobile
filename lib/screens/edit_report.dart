@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:app/provider/reason.dart';
 import 'package:app/provider/report.dart';
 import 'package:app/provider/currentReport.dart';
@@ -7,6 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:app/theme/theme.dart';
 
+import '../api/entity/report/report_entity.dart';
+import '../api/service/report_service.dart';
+
 class EditReportPage extends StatefulWidget {
   const EditReportPage({super.key});
 
@@ -15,26 +20,17 @@ class EditReportPage extends StatefulWidget {
 }
 
 class _EditReportPageState extends State<EditReportPage> {
-  double mentalPoint = 50.0;
-  var selectedIdList = <String>[];
-  late String id;
   String message = '';
-
-  @override
-  void initState() {
-    super.initState();
-
-    final currentReport = context.read<CurrentReportProvider>().report;
-    id = currentReport.id;
-    mentalPoint = currentReport.point.toDouble();
-    selectedIdList = currentReport.reasonIdList;
-  }
 
   @override
   Widget build(BuildContext context) {
     final themeColor = Provider.of<ThemeProvider>(context).theme.colorTheme;
-    final date = context.read<CurrentReportProvider>().report.date;
-    List<Reason> reasonList = context.watch<ReasonsProvider>().reasons;
+    final currentReport = context.watch<CurrentReportProvider>().report;
+    final id = currentReport.id;
+    final mentalPoint = currentReport.point.toDouble();
+    final date = currentReport.date;
+    final selectedIdList = currentReport.reasonIdList;
+    final reasonList = context.watch<ReasonsProvider>().reasons;
 
     return Scaffold(
       backgroundColor: themeColor.background,
@@ -92,10 +88,7 @@ class _EditReportPageState extends State<EditReportPage> {
               child: Slider(
                 value: mentalPoint,
                 onChanged: (value) {
-                  setState(() {
-                    mentalPoint = value;
-                    context.read<CurrentReportProvider>().updatePoint(mentalPoint.toInt());
-                  });
+                  context.read<CurrentReportProvider>().updatePoint(value.toInt());
                 },
                 min: 0.0,
                 max: 100.0,
@@ -146,11 +139,9 @@ class _EditReportPageState extends State<EditReportPage> {
                             borderRadius: const BorderRadius.all(Radius.circular(32)),
                             onTap: () {
                               if (isSelected) {
-                                selectedIdList.remove(reason.id);
-                                context.read<CurrentReportProvider>().updateReasonIdList(selectedIdList);
+                                context.read<CurrentReportProvider>().updateReasonIdList([...selectedIdList]..remove(reason.id));
                               } else {
-                                selectedIdList.add(reason.id);
-                                context.read<CurrentReportProvider>().updateReasonIdList(selectedIdList);
+                                context.read<CurrentReportProvider>().updateReasonIdList([...selectedIdList, reason.id]);
                               }
                               setState(() {});
                             },
@@ -200,19 +191,30 @@ class _EditReportPageState extends State<EditReportPage> {
                     top: 0,
                   ),
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (selectedIdList.isNotEmpty) {
-                        context.read<CurrentReportProvider>().updateReport(
-                            Report(id, date, mentalPoint.toInt(), selectedIdList)
-                        );
-                        context.read<ReportsProvider>().edit(
-                            Report(id, date, mentalPoint.toInt(), selectedIdList)
-                        );
-                        Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context) {
-                              return const LogPage();
-                            })
-                        );
+                        try {
+                          final response = await ReportService().update(id, mentalPoint.toInt(), selectedIdList);
+
+                          final data = ReportEntity.fromJson(json.decode(response.body));
+
+                          if (!mounted) return;
+                          context.read<CurrentReportProvider>().updateReport(
+                              Report(data.mentalPointId, date, data.point, data.reasonIdList)
+                          );
+                          context.read<ReportsProvider>().edit(
+                              Report(data.mentalPointId, date, data.point, data.reasonIdList)
+                          );
+                          Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) {
+                                return const LogPage();
+                              })
+                          );
+                        } catch(e) {
+                          setState(() {
+                            message = 'failed in updating report';
+                          });
+                        }
                       } else {
                         setState(() {
                           message = "Select at least one reason";
@@ -238,6 +240,5 @@ class _EditReportPageState extends State<EditReportPage> {
         ),
       ),
     );
-
   }
 }

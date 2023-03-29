@@ -97,7 +97,7 @@ class _SigninPageState extends State<SigninPage> {
                       await Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) {
-                            return HomePage();
+                            return const HomePage();
                           }
                         ),
                       );

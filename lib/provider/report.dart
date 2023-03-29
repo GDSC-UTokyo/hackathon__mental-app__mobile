@@ -27,7 +27,7 @@ class ReportsProvider extends ChangeNotifier {
   void create(Report report) {
     if (!hasSameReportId(report.id, _reports)) {
       _reports.add(report);
-      _reports.sort((a,b) => a.date.compareTo(b.date));
+      _reports.sort((a,b) => b.date.compareTo(a.date));
       notifyListeners();
     }
   }
@@ -35,7 +35,12 @@ class ReportsProvider extends ChangeNotifier {
   void edit(Report report) {
     _reports.removeWhere((currentReport) => currentReport.id == report.id);
     _reports.add(report);
-    _reports.sort((a,b) => a.date.compareTo(b.date));
+    _reports.sort((a,b) => b.date.compareTo(a.date));
+    notifyListeners();
+  }
+
+  void sortByDate() {
+    _reports.sort((a,b) => b.date.compareTo(a.date));
     notifyListeners();
   }
 }

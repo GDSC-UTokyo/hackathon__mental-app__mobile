@@ -1,4 +1,4 @@
-package com.example.app
+package com.utokyo.mental_app1
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -29,7 +29,7 @@ class _InitialPageState extends State<InitialPage> {
                     style: TextStyle(
                       color: themeColor.white.first,
                       fontFamily: 'Pacifico',
-                      fontSize: 100,
+                      fontSize: 90,
                     ),
                   ),
                   Padding(
