@@ -20,26 +20,17 @@ class EditReportPage extends StatefulWidget {
 }
 
 class _EditReportPageState extends State<EditReportPage> {
-  double mentalPoint = 50.0;
-  var selectedIdList = <String>[];
-  late String id;
   String message = '';
-
-  @override
-  void initState() {
-    super.initState();
-
-    var currentReport = context.read<CurrentReportProvider>().report;
-    id = currentReport.id;
-    mentalPoint = currentReport.point.toDouble();
-    selectedIdList = currentReport.reasonIdList;
-  }
 
   @override
   Widget build(BuildContext context) {
     final themeColor = Provider.of<ThemeProvider>(context).theme.colorTheme;
-    final date = context.read<CurrentReportProvider>().report.date;
-    List<Reason> reasonList = context.watch<ReasonsProvider>().reasons;
+    final currentReport = context.watch<CurrentReportProvider>().report;
+    final id = currentReport.id;
+    final mentalPoint = currentReport.point.toDouble();
+    final date = currentReport.date;
+    final selectedIdList = currentReport.reasonIdList;
+    final reasonList = context.watch<ReasonsProvider>().reasons;
 
     return Scaffold(
       backgroundColor: themeColor.background,
@@ -97,10 +88,7 @@ class _EditReportPageState extends State<EditReportPage> {
               child: Slider(
                 value: mentalPoint,
                 onChanged: (value) {
-                  setState(() {
-                    mentalPoint = value;
-                    context.read<CurrentReportProvider>().updatePoint(mentalPoint.toInt());
-                  });
+                  context.read<CurrentReportProvider>().updatePoint(value.toInt());
                 },
                 min: 0.0,
                 max: 100.0,
@@ -151,11 +139,9 @@ class _EditReportPageState extends State<EditReportPage> {
                             borderRadius: const BorderRadius.all(Radius.circular(32)),
                             onTap: () {
                               if (isSelected) {
-                                selectedIdList.remove(reason.id);
-                                context.read<CurrentReportProvider>().updateReasonIdList(selectedIdList);
+                                context.read<CurrentReportProvider>().updateReasonIdList([...selectedIdList]..remove(reason.id));
                               } else {
-                                selectedIdList.add(reason.id);
-                                context.read<CurrentReportProvider>().updateReasonIdList(selectedIdList);
+                                context.read<CurrentReportProvider>().updateReasonIdList([...selectedIdList, reason.id]);
                               }
                               setState(() {});
                             },
@@ -225,7 +211,6 @@ class _EditReportPageState extends State<EditReportPage> {
                               })
                           );
                         } catch(e) {
-                          print(e);
                           setState(() {
                             message = 'failed in updating report';
                           });

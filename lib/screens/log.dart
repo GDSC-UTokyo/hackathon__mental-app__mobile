@@ -55,6 +55,7 @@ class _LogPageState extends State<LogPage> {
         List<String>.from(jsonMap['reasonIdList'])
       ));
     }
+    context.read<ReportsProvider>().sortByDate();
 
     final reasonsResponse = await ReasonService().fetch();
     List<Map<String, dynamic>> decodedReasonsResponse = jsonDecode(reasonsResponse.body).cast<Map<String, dynamic>>();
